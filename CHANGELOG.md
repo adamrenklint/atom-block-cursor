@@ -1,3 +1,6 @@
+## 0.2.2 - Grammar nazi
+* Fixed capitalization in config descriptions
+
 ## 0.2.1 - Blinking cursors
 * Fixed the 'cursorBlink' config option
 
