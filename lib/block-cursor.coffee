@@ -1,7 +1,7 @@
 path = require 'path'
 
 class BlockCursor
-  styleElement: null
+  cursorColorStyleElement = null
 
   config:
     cursorColor:
@@ -29,24 +29,24 @@ class BlockCursor
     @cursorColorObserveSubscription.dispose()
     @cursorBlinkObserveSubscription.dispose()
 
-  getStyle: ->
-    @styleElement ?= document.createElement 'style'
-    @styleElement.type = 'text/css'
-    document.querySelector('head atom-styles').appendChild @styleElement
-    @styleElement
+  getCursorColorStyleElement: ->
+    return cursorColorStyleElement if cursorColorStyleElement?
+    cursorColorStyleElement = document.createElement 'style'
+    cursorColorStyleElement.type = 'text/css'
+    document.querySelector('head atom-styles').appendChild cursorColorStyleElement
+    return cursorColorStyleElement
 
   applyCursorColor: (color) ->
-    stylesheet = @getStyle().sheet
+    stylesheet = @getCursorColorStyleElement().sheet
     selector = '.block-cursor atom-text-editor::shadow .cursors .cursor'
-    colorStr = "rgba(#{color.red}, #{color.green}, #{color.blue}, #{color.alpha})"
     stylesheet.deleteRule 0 if stylesheet.cssRules.length isnt 0
-    stylesheet.insertRule "#{selector} { background-color: #{colorStr}; }", 0
+    stylesheet.insertRule "#{selector} { background-color: #{color.toHexString()}; }", 0
 
   applyCursorBlink: (blinkEnabled) ->
     atomWorkspaceView = atom.views.getView atom.workspace
     if blinkEnabled
-      atomWorkspaceView.classList.remove 'no-blink'
+      atomWorkspaceView.classList.remove 'block-cursor-no-blink'
     else
-      atomWorkspaceView.classList.add 'no-blink'
+      atomWorkspaceView.classList.add 'block-cursor-no-blink'
 
 module.exports = new BlockCursor()
