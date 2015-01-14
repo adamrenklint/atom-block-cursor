@@ -1,0 +1,11 @@
+{
+  "name": "block-cursor",
+  "main": "./lib/block-cursor",
+  "version": "0.0.0",
+  "description": "Changes the I-bar cursor to a block cursor",
+  "repository": "https://github.com/olmokramer/block-cursor",
+  "license": "MIT",
+  "engines": {
+    "atom": ">0.150.0"
+  }
+}
