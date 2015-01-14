@@ -5,11 +5,11 @@ class BlockCursor
 
   config:
     cursorColor:
-      description: 'color of the cursor'
+      description: 'Color of the cursor'
       type: 'color'
       default: '#666'
     cursorBlink:
-      description: 'enable/disable cursor blink'
+      description: 'Enable/disable cursor blink'
       type: 'boolean'
       default: false
 
