@@ -6,6 +6,6 @@
   "repository": "https://github.com/olmokramer/atom-block-cursor",
   "license": "MIT",
   "engines": {
-    "atom": ">0.150.0"
+    "atom": ">0.171.0"
   }
 }
