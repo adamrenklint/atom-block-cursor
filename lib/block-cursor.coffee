@@ -5,9 +5,9 @@ class BlockCursor
 
   config:
     cursorColor:
-      description: 'color of the cursor (#XXXXXX)'
-      type: 'string'
-      default: ''
+      description: 'color of the cursor'
+      type: 'color'
+      default: '#666'
     cursorBlink:
       description: 'enable/disable cursor blink'
       type: 'boolean'
@@ -29,17 +29,18 @@ class BlockCursor
     @cursorColorObserveSubscription.dispose()
     @cursorBlinkObserveSubscription.dispose()
 
-  applyCursorColor: (color) ->
-    style = @getStyle()
-    selector = '.block-cursor atom-text-editor::shadow .cursors .cursor'
-    style.sheet.deleteRule 0 if style.sheet.cssRules.length isnt 0
-    style.sheet.insertRule "#{selector} { background-color: #{color}; }", 0
-
   getStyle: ->
     @styleElement ?= document.createElement 'style'
     @styleElement.type = 'text/css'
     document.querySelector('head atom-styles').appendChild @styleElement
     @styleElement
+
+  applyCursorColor: (color) ->
+    stylesheet = @getStyle().sheet
+    selector = '.block-cursor atom-text-editor::shadow .cursors .cursor'
+    colorStr = "rgba(#{color.red}, #{color.green}, #{color.blue}, #{color.alpha})"
+    stylesheet.deleteRule 0 if stylesheet.cssRules.length isnt 0
+    stylesheet.insertRule "#{selector} { background-color: #{colorStr}; }", 0
 
   applyCursorBlink: (blinkEnabled) ->
     atomWorkspaceView = atom.views.getView atom.workspace
