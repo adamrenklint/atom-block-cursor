@@ -1,7 +1,7 @@
 {
   "name": "block-cursor",
   "main": "./lib/block-cursor",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Changes the I-bar cursor to a block cursor",
   "repository": "https://github.com/olmokramer/atom-block-cursor",
   "license": "MIT",
