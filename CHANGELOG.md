@@ -1,3 +1,6 @@
+## 0.2.3 - !important stuff
+* Made compatible with certain syntax themes that set !important on the border color of the cursor
+
 ## 0.2.2 - Grammar nazi
 * Fixed capitalization in config descriptions
 
