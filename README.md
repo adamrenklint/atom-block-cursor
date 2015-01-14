@@ -2,7 +2,7 @@
 
 Changes the I-bar cursor to a block cursor.
 
-![A screenshot of your package](screenshot.png)
+![A screenshot of your package](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/screenshot.png)
 
 ## config
 
