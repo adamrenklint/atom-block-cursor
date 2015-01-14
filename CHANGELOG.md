@@ -1,3 +1,6 @@
+## 0.2.1 - Blinking cursors
+* Fixed the 'cursorBlink' config option
+
 ## 0.2.0 - Config color
 * Using new 'color' type for the cursorColor option
 
