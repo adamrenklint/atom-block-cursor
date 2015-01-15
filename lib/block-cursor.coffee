@@ -11,7 +11,7 @@ class BlockCursor
     secondaryColor:
       description: 'Secondary color of the cursor'
       type: 'color'
-      default: 'transparent'
+      default: '#393939'
 
   activate: ->
     atomWorkspaceView = atom.views.getView atom.workspace
