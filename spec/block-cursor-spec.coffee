@@ -46,9 +46,7 @@ describe 'Block Cursor', ->
     describe 'the enablePulse option', ->
       it 'adds the block-cursor-pulse class to the workspaceView if enabled', ->
         workspaceView = atom.views.getView atom.workspace
-        console.log workspaceView.className
         atom.config.set 'block-cursor.pulseEnabled', true
-        console.log workspaceView.className
         expect(workspaceView.className).toMatch /\s*block-cursor-pulse\s*/
 
       it 'removes the block-cursor-pulse class from the workspaceView if disabled', ->
