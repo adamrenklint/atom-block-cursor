@@ -16,4 +16,8 @@
   atom-text-editor[mini]:not(.is-focused)::shadow .cursors .cursor {
     display: none;
   }
+
+  &.block-cursor-pulse atom-text-editor::shadow .cursors .cursor {
+    transition: background-color .4s;
+  }
 }

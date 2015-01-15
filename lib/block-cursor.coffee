@@ -12,19 +12,25 @@ class BlockCursor
       description: 'Secondary color of the cursor'
       type: 'color'
       default: '#393939'
+    enablePulse:
+      description: 'Fade from primary color to secondary color'
+      type: 'boolean'
+      default: false
 
   activate: ->
-    atomWorkspaceView = atom.views.getView atom.workspace
-    atomWorkspaceView.classList.add 'block-cursor'
+    workspaceView = atom.views.getView atom.workspace
+    workspaceView.classList.add 'block-cursor'
 
     @primaryColorObserveSubscription =
       atom.config.observe 'block-cursor.primaryColor', (val) => @applyPrimaryColor val
     @secondaryColorObserveSubscription =
       atom.config.observe 'block-cursor.secondaryColor', (val) => @applySecondaryColor val
+    @enablePulseObserveSubscription =
+      atom.config.observe 'block-cursor.enablePulse', (val) => @applyPulse val
 
   deactivate: ->
-    atomWorkspaceView = atom.views.getView atom.workspace
-    atomWorkspaceView.classList.remove 'block-cursor'
+    workspaceView = atom.views.getView atom.workspace
+    workspaceView.classList.remove 'block-cursor'
 
     @primaryColorObserveSubscription.dispose()
     @secondaryColorObserveSubscription.dispose()
@@ -47,5 +53,12 @@ class BlockCursor
     stylesheet = @getColorStyleElement().sheet
     stylesheet.deleteRule 1
     stylesheet.insertRule "#{secondarySelector} { background-color: #{color.toRGBAString()}; }", 1
+
+  applyPulse: (enabled) ->
+    workspaceView = atom.views.getView atom.workspace
+    if enabled
+      workspaceView.classList.add 'block-cursor-pulse'
+    else
+      workspaceView.classList.remove 'block-cursor-pulse'
 
 module.exports = new BlockCursor()
