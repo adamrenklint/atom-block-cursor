@@ -1,3 +1,6 @@
+## 0.4.0
+* Added pulse option
+
 ## 0.3.1 - Some fixes
 * Force cursor opacity to 1, also in blink-off state
 * Slightly changed the atom-text-editor[mini] selector
