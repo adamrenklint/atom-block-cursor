@@ -1,3 +1,7 @@
+## 0.3.1 - Some fixes
+* Force cursor opacity to 1, also in blink-off state
+* Slightly changed the atom-text-editor[mini] selector
+
 ## 0.3.0 - Fancy blinking
 * Removed 'cursorBlink' option
 * Renamed 'cursorColor' option -> 'primaryColor'
