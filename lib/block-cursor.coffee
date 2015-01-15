@@ -31,6 +31,7 @@ class BlockCursor
   deactivate: ->
     workspaceView = atom.views.getView atom.workspace
     workspaceView.classList.remove 'block-cursor'
+    workspaceView.classList.remove 'block-cursor-pulse'
 
     @primaryColorObserveSubscription.dispose()
     @secondaryColorObserveSubscription.dispose()
