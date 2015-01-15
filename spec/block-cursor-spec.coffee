@@ -1,5 +1,20 @@
 blockCursor = require '../lib/block-cursor'
 
+testColor = (index) ->
+  configKey = if index > 0 then 'secondaryColor' else 'primaryColor'
+  style = blockCursor.getColorStyleElement()
+
+  initialColor = atom.config.get "block-cursor.#{configKey}"
+  initialRule = style.sheet.cssRules[index].cssText
+
+  newColor = initialColor
+  newColor.red = (newColor.red + 1) % 256
+  atom.config.set "block-cursor.#{configKey}", newColor
+  newRule = style.sheet.cssRules[index].cssText
+
+  expect(newRule).not.toEqual initialRule
+  expect(newRule).toMatch /rgba?\(([0-9]{1,3}(,?\s?)?){3,4}\)/
+
 describe 'Block Cursor', ->
   beforeEach ->
     waitsForPromise -> atom.packages.activatePackage 'block-cursor'
@@ -28,17 +43,15 @@ describe 'Block Cursor', ->
       it 'changes the second rule of the packages stylesheet', ->
         testColor 1
 
-testColor = (index) ->
-  configKey = if index > 0 then 'secondaryColor' else 'primaryColor'
-  style = blockCursor.getColorStyleElement()
+    describe 'the enablePulse option', ->
+      it 'adds the block-cursor-pulse class to the workspaceView if enabled', ->
+        workspaceView = atom.views.getView atom.workspace
+        console.log workspaceView.className
+        atom.config.set 'block-cursor.pulseEnabled', true
+        console.log workspaceView.className
+        expect(workspaceView.className).toMatch /\s*block-cursor-pulse\s*/
 
-  initialColor = atom.config.get "block-cursor.#{configKey}"
-  initialRule = style.sheet.cssRules[index].cssText
-
-  newColor = initialColor
-  newColor.red = (newColor.red + 1) % 256
-  atom.config.set "block-cursor.#{configKey}", newColor
-  newRule = style.sheet.cssRules[index].cssText
-
-  expect(newRule).not.toEqual initialRule
-  expect(newRule).toMatch /rgba?\(([0-9]{1,3}(,?\s?)?){3,4}\)/
+      it 'removes the block-cursor-pulse class from the workspaceView if disabled', ->
+        workspaceView = atom.views.getView atom.workspace
+        atom.config.set 'block-cursor.pulseEnabled', false
+        expect(workspaceView.className).not.toMatch /block-cursor-pulse/
