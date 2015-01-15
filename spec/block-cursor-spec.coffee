@@ -1,8 +1,6 @@
 blockCursor = require '../lib/block-cursor'
 
 describe 'Block Cursor', ->
-  cursorColorStyleElement = blockCursor.getCursorColorStyleElement()
-
   beforeEach ->
     waitsForPromise -> atom.packages.activatePackage 'block-cursor'
 
@@ -10,36 +8,37 @@ describe 'Block Cursor', ->
     workspaceView = atom.views.getView atom.workspace
     expect(workspaceView.className).toMatch /\s*block-cursor\s*/
 
-  it 'adds a style element to the atom-styles element in the head element', ->
-    foundStyleElement = false
-    for styleElement in document.querySelector('head atom-styles').childNodes when styleElement is cursorColorStyleElement
-      foundStyleElement = true
-      break
-    expect(foundStyleElement).toEqual(true)
+  describe 'the style element added by this package', ->
+    styleElement = blockCursor.getColorStyleElement()
 
-  describe 'Configuration', ->
-    describe 'the cursorBlink option', ->
-      it 'removes the block-cursor-no-blink class from the workspaceView when enabled', ->
-        workspaceView = atom.views.getView atom.workspace
-        atom.config.set 'block-cursor.cursorBlink', true
-        expect(workspaceView.className).not.toMatch /\s*block-cursor-no-blink\s*/
+    it 'is in the atom-styles element in the head element', ->
+      expect(styleElement.parentNode).toEqual document.querySelector 'head atom-styles'
+      expect(styleElement.parentNode.parentNode).toEqual document.head
 
-      it 'adds the block-cursor-no-blink class to the workspaceView when disabled', ->
-        workspaceView = atom.views.getView atom.workspace
-        atom.config.set 'block-cursor.cursorBlink', false
-        expect(workspaceView.className).toMatch /\s*block-cursor-no-blink\s*/
 
-    describe 'the cursorColor option', ->
-      it 'changes the first rule of the stylesheet that is inserted by the package', ->
-        initialColor = atom.config.get 'block-cursor.cursorColor'
-        initialFirstRule = cursorColorStyleElement.sheet.cssRules[0].cssText
-        newColor = initialColor
-        newColor.red = (initialColor.red + 1) % 255
-        atom.config.set 'block-cursor.cursorColor', newColor
-        newFirstRule = cursorColorStyleElement.sheet.cssRules[0].cssText
-        newColorFromRule = newFirstRule.match /rgb\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3})\)/
+    it 'has two rules', ->
+      expect(styleElement.sheet.cssRules.length).toEqual(2)
 
-        expect(newFirstRule).not.toEqual initialFirstRule
-        expect(parseInt newColorFromRule[1], 10).toEqual newColor.red
-        expect(parseInt newColorFromRule[2], 10).toEqual newColor.green
-        expect(parseInt newColorFromRule[3], 10).toEqual newColor.blue
+  describe 'config', ->
+    describe 'the primary color option', ->
+      it 'changes the first rule of the packages stylesheet', ->
+        testColor 0
+
+    describe 'the secondary color option', ->
+      it 'changes the second rule of the packages stylesheet', ->
+        testColor 1
+
+testColor = (index) ->
+  configKey = if index > 0 then 'secondaryColor' else 'primaryColor'
+  style = blockCursor.getColorStyleElement()
+
+  initialColor = atom.config.get "block-cursor.#{configKey}"
+  initialRule = style.sheet.cssRules[index].cssText
+
+  newColor = initialColor
+  newColor.red = (newColor.red + 1) % 256
+  atom.config.set "block-cursor.#{configKey}", newColor
+  newRule = style.sheet.cssRules[index].cssText
+
+  expect(newRule).not.toEqual initialRule
+  expect(newRule).toMatch /rgba?\(([0-9]{1,3}(,?\s?)?){3,4}\)/

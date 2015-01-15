@@ -39,7 +39,6 @@ class BlockCursor
     return colorStyleElement
 
   applyPrimaryColor: (color) ->
-    console.log color
     stylesheet = @getColorStyleElement().sheet
     stylesheet.deleteRule 0
     stylesheet.insertRule "#{primarySelector} { background-color: #{color.toRGBAString()}; }", 0
