@@ -2,8 +2,8 @@
 
 Changes the I-bar cursor to a block cursor.
 
-![A screenshot of your package](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/screenshot.png)
+![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/screenshot.png)
 
 ## config
 
-By default, the color will use your current syntax theme's `@syntax-cursor-color`. This can be overridden by a color specified in the package's settings. Also cursor blinking can be enabled/disabled.
+The color of the cursor can be changed in the package's settings panel. As of v0.3.0 there are two colors, to allow for blinking between two colors (instead of blinking on and off).
