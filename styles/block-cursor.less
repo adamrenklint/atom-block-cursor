@@ -5,17 +5,8 @@
   atom-text-editor::shadow .cursors .cursor {
     color: transparent!important;
     border-color: transparent!important;
-    background-color: @syntax-cursor-color;
     z-index: -1;
     opacity: 1;
-  }
-
-  &.block-cursor-no-blink atom-text-editor::shadow .cursors.blink-off .cursor {
-    opacity: 1;
-  }
-
-  &:not(.block-cursor-no-blink) atom-text-editor::shadow .cursors.blink-off .cursor {
-    opacity: 0;
   }
 
   atom-text-editor[mini]:not(.is-focused)::shadow .cursor {

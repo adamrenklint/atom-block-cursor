@@ -1,52 +1,52 @@
-path = require 'path'
-
 class BlockCursor
-  cursorColorStyleElement = null
+  colorStyleElement = null
+  primarySelector = '.block-cursor atom-text-editor::shadow .cursors .cursor'
+  secondarySelector = '.block-cursor atom-text-editor::shadow .cursors.blink-off .cursor'
 
   config:
-    cursorColor:
-      description: 'Color of the cursor'
+    primaryColor:
+      description: 'Primary color of the cursor'
       type: 'color'
-      default: '#666'
-    cursorBlink:
-      description: 'Enable/disable cursor blink'
-      type: 'boolean'
-      default: false
+      default: '#393939'
+    secondaryColor:
+      description: 'Secondary color of the cursor'
+      type: 'color'
+      default: 'transparent'
 
   activate: ->
     atomWorkspaceView = atom.views.getView atom.workspace
     atomWorkspaceView.classList.add 'block-cursor'
 
-    @cursorColorObserveSubscription =
-      atom.config.observe 'block-cursor.cursorColor', (val) => @applyCursorColor val
-    @cursorBlinkObserveSubscription =
-      atom.config.observe 'block-cursor.cursorBlink', (val) => @applyCursorBlink val
+    @primaryColorObserveSubscription =
+      atom.config.observe 'block-cursor.primaryColor', (val) => @applyPrimaryColor val
+    @secondaryColorObserveSubscription =
+      atom.config.observe 'block-cursor.secondaryColor', (val) => @applySecondaryColor val
 
   deactivate: ->
     atomWorkspaceView = atom.views.getView atom.workspace
-    atomWorkspaceView.classList.add 'block-cursor'
+    atomWorkspaceView.classList.remove 'block-cursor'
 
-    @cursorColorObserveSubscription.dispose()
-    @cursorBlinkObserveSubscription.dispose()
+    @primaryColorObserveSubscription.dispose()
+    @secondaryColorObserveSubscription.dispose()
 
-  getCursorColorStyleElement: ->
-    return cursorColorStyleElement if cursorColorStyleElement?
-    cursorColorStyleElement = document.createElement 'style'
-    cursorColorStyleElement.type = 'text/css'
-    document.querySelector('head atom-styles').appendChild cursorColorStyleElement
-    return cursorColorStyleElement
+  getColorStyleElement: ->
+    return colorStyleElement if colorStyleElement?
+    colorStyleElement = document.createElement 'style'
+    colorStyleElement.type = 'text/css'
+    document.querySelector('head atom-styles').appendChild colorStyleElement
+    colorStyleElement.sheet.insertRule "#{primarySelector} {}", 0
+    colorStyleElement.sheet.insertRule "#{secondarySelector} {}", 1
+    return colorStyleElement
 
-  applyCursorColor: (color) ->
-    stylesheet = @getCursorColorStyleElement().sheet
-    selector = '.block-cursor atom-text-editor::shadow .cursors .cursor'
-    stylesheet.deleteRule 0 if stylesheet.cssRules.length isnt 0
-    stylesheet.insertRule "#{selector} { background-color: #{color.toHexString()}; }", 0
+  applyPrimaryColor: (color) ->
+    console.log color
+    stylesheet = @getColorStyleElement().sheet
+    stylesheet.deleteRule 0
+    stylesheet.insertRule "#{primarySelector} { background-color: #{color.toRGBAString()}; }", 0
 
-  applyCursorBlink: (blinkEnabled) ->
-    atomWorkspaceView = atom.views.getView atom.workspace
-    if blinkEnabled
-      atomWorkspaceView.classList.remove 'block-cursor-no-blink'
-    else
-      atomWorkspaceView.classList.add 'block-cursor-no-blink'
+  applySecondaryColor: (color) ->
+    stylesheet = @getColorStyleElement().sheet
+    stylesheet.deleteRule 1
+    stylesheet.insertRule "#{secondarySelector} { background-color: #{color.toRGBAString()}; }", 1
 
 module.exports = new BlockCursor()
