@@ -1,3 +1,11 @@
+## 0.3.0 - Fancy blinking
+* Removed 'cursorBlink' option
+* Renamed 'cursorColor' option -> 'primaryColor'
+* Added 'secondaryColor' option
+
+## 0.2.4 - Specs
+* Created specs for testing
+
 ## 0.2.3 - !important stuff
 * Made compatible with certain syntax themes that set !important on the border color of the cursor
 
