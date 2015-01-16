@@ -1,5 +1,4 @@
-// use the syntax theme's @syntax-selection-color
-@import "syntax-variables";
+@import "./colors";
 
 .block-cursor {
   atom-text-editor::shadow .cursors .cursor {
@@ -7,10 +6,14 @@
     border-color: transparent!important;
     z-index: -1;
     opacity: 1;
+
+    background-color: @block-cursor-primary-color;
   }
 
   atom-text-editor::shadow .cursors.blink-off .cursor {
     opacity: 1!important;
+
+    background-color: @block-cursor-secondary-color;
   }
 
   atom-text-editor[mini]:not(.is-focused)::shadow .cursors .cursor {

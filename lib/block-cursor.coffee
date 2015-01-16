@@ -1,8 +1,7 @@
-class BlockCursor
-  colorStyleElement = null
-  primarySelector = '.block-cursor atom-text-editor::shadow .cursors .cursor'
-  secondarySelector = '.block-cursor atom-text-editor::shadow .cursors.blink-off .cursor'
+fs = require 'fs'
+path = require 'path'
 
+class BlockCursor
   config:
     primaryColor:
       description: 'Primary color of the cursor'
@@ -35,25 +34,23 @@ class BlockCursor
 
     @primaryColorObserveSubscription.dispose()
     @secondaryColorObserveSubscription.dispose()
+    @enablePulseObserveSubscription.dispose()
 
-  getColorStyleElement: ->
-    return colorStyleElement if colorStyleElement?
-    colorStyleElement = document.createElement 'style'
-    colorStyleElement.type = 'text/css'
-    document.querySelector('head atom-styles').appendChild colorStyleElement
-    colorStyleElement.sheet.insertRule "#{primarySelector} {}", 0
-    colorStyleElement.sheet.insertRule "#{secondarySelector} {}", 1
-    return colorStyleElement
+  applyPrimaryColor: (primaryColor) ->
+    secondaryColor = atom.config.get 'block-cursor.secondaryColor'
+    @writeLessVariables primaryColor, secondaryColor
 
-  applyPrimaryColor: (color) ->
-    stylesheet = @getColorStyleElement().sheet
-    stylesheet.deleteRule 0
-    stylesheet.insertRule "#{primarySelector} { background-color: #{color.toRGBAString()}; }", 0
+  applySecondaryColor: (secondaryColor) ->
+    primaryColor = atom.config.get 'block-cursor.primaryColor'
+    @writeLessVariables primaryColor, secondaryColor
 
-  applySecondaryColor: (color) ->
-    stylesheet = @getColorStyleElement().sheet
-    stylesheet.deleteRule 1
-    stylesheet.insertRule "#{secondarySelector} { background-color: #{color.toRGBAString()}; }", 1
+  writeLessVariables: (primaryColor, secondaryColor) ->
+    text = """
+      @block-cursor-primary-color: #{primaryColor.toRGBAString()};
+      @block-cursor-secondary-color: #{secondaryColor.toRGBAString()};
+    """
+    file = path.join __dirname, '..', 'styles', 'colors.less'
+    fs.writeFile file, text
 
   applyPulse: (enabled) ->
     workspaceView = atom.views.getView atom.workspace
