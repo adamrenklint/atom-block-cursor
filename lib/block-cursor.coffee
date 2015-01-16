@@ -2,6 +2,9 @@ fs = require 'fs'
 path = require 'path'
 
 class BlockCursor
+  mainLessFile: path.join __dirname, '..', 'styles', 'block-cursor.less'
+  colorsLessFile: path.join __dirname, '..', 'styles', 'includes', 'colors.less'
+
   config:
     primaryColor:
       description: 'Primary color of the cursor'
@@ -49,10 +52,15 @@ class BlockCursor
       @block-cursor-primary-color: #{primaryColor.toRGBAString()};
       @block-cursor-secondary-color: #{secondaryColor.toRGBAString()};
     """
-    file = path.join __dirname, '..', 'styles', 'colors.less'
-    fs.writeFile file, text
+    fs.writeFileSync @colorsLessFile, text
+    @reloadStylesheet()
+
+  reloadStylesheet: ->
+    atom.themes.removeStylesheet @mainLessFile
+    atom.themes.requireStylesheet @mainLessFile
 
   applyPulse: (enabled) ->
+    console.log enabled
     workspaceView = atom.views.getView atom.workspace
     if enabled
       workspaceView.classList.add 'block-cursor-pulse'
