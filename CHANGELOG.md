@@ -1,3 +1,6 @@
+## 0.5.0
+* Replaced the 'enablePulse' option with 'pulseDuration' option
+
 ## 0.4.6
 * Fix: make block-cursor.coffee look for vars.less instead of colors.less
 * Fix: make block-cursor.less look for vars.less instead of colors.less
