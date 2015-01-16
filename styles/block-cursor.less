@@ -1,26 +1,21 @@
 @import "includes/colors";
 
-.block-cursor {
-  atom-text-editor::shadow .cursors .cursor {
-    color: transparent!important;
-    border-color: transparent!important;
-    z-index: -1;
-    opacity: 1;
+atom-text-editor::shadow .cursors .cursor {
+  color: transparent!important;
+  border-color: transparent!important;
+  z-index: -1;
+  opacity: 1;
 
-    background-color: @block-cursor-primary-color;
-  }
+  background-color: @block-cursor-primary-color;
+  transition: @block-cursor-pulse;
+}
 
-  atom-text-editor::shadow .cursors.blink-off .cursor {
-    opacity: 1!important;
+atom-text-editor::shadow .cursors.blink-off .cursor {
+  opacity: 1!important;
 
-    background-color: @block-cursor-secondary-color;
-  }
+  background-color: @block-cursor-secondary-color;
+}
 
-  atom-text-editor[mini]:not(.is-focused)::shadow .cursors .cursor {
-    display: none;
-  }
-
-  &.block-cursor-pulse atom-text-editor::shadow .cursors .cursor {
-    transition: background-color .4s;
-  }
+atom-text-editor[mini]:not(.is-focused)::shadow .cursors .cursor {
+  display: none;
 }
