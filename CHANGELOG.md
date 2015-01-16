@@ -1,3 +1,7 @@
+## 0.4.5
+* Removed the block-cursor class from the workspaceView
+* Removed the block-cursor-pulse class from the workspaceView
+
 ## 0.4.4 - Cleanup
 * Removed some console.logs
 
