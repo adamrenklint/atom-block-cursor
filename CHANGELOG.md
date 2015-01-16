@@ -1,6 +1,7 @@
 ## 0.4.5
 * Removed the block-cursor class from the workspaceView
 * Removed the block-cursor-pulse class from the workspaceView
+* Renamed styles/includes/colors.less -> styles/includes/vars.less
 
 ## 0.4.4 - Cleanup
 * Removed some console.logs
