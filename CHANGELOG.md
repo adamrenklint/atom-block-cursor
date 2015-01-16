@@ -1,3 +1,6 @@
+## 0.4.4 - Cleanup
+* Removed some console.logs
+
 ## 0.4.3 - Keeping track
 * Fixed false changelog information
 
