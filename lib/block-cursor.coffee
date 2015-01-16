@@ -60,7 +60,6 @@ class BlockCursor
     atom.themes.requireStylesheet @mainLessFile
 
   applyPulse: (enabled) ->
-    console.log enabled
     workspaceView = atom.views.getView atom.workspace
     if enabled
       workspaceView.classList.add 'block-cursor-pulse'
