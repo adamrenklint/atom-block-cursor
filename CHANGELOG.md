@@ -1,3 +1,6 @@
+## 0.4.1 - Config stuff
+* Changed the configuration mechanism, much easier to keep track of the config
+
 ## 0.4.0
 * Added pulse option
 
