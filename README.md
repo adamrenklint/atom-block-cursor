@@ -1,21 +1,30 @@
 # block-cursor
 
-Changes the I-bar cursor to a block cursor.
+![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-block.png)
 
-![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/screenshot.png)
+What started out as a simple package to replace the I-beam cursor for a Block cursor, ended up getting more and more options. This package allows the cursor to be customized in a number of ways.
 
 ## config
 
-#### cursor color
+#### cursor type
 
-The color of the cursor can be changed in the package's settings panel. As of `v0.3.0` there are two colors, to allow for blinking between two colors (instead of blinking on and off).
-Note for those that want a blink-on-blink-off cursor: You can't set the cursor color to transparent from the settings tab. You will have to do this by editing `~/.atom/config.cson`.
+The cursor can be one of the following:
+* Block ![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-block.png)
+* Bordered-box ![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-bordered-box.png)
+* I-beam ![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-i-beam.png)
+* Underline ![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-underline.png)
 
-#### cursor pulse
+#### primary cursor color & secondary cursor color
 
-As of `v0.4.0` there's an option, `enablePulse`, that makes the cursor pulsate rather than blink. It is off by default.
+The primary and secondary colors determine the color of the cursor in it's `blink-on` and `blink-off` state, respectively. From the settings menu, you can't set transparency, so if you want transparency, that has to be done by editing the `~/.atom/config.cson` file directly. Consult [the docs](https://atom.io/docs/api/latest/Config) about color objects.
 
-As of `v0.5.0` the `enablePulse` option has been replaced with the `pulseDuration` option, which determines the duration of a pulse. If you want to disable the pulse, set this to `0`.
+#### pulse duration
+
+Set the pulse duration to let the cursor fade from `primary color` to `secondary color`, instead of the default blinking behavior.
+
+![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-pulse.gif)
+
+<small>Cursor blinking</small>
 
 ## copyright
 

@@ -1,3 +1,9 @@
+## 0.6.0 - Cursor galore
+* Added 3 types of cursors. See readme for images
+  * I-beam
+  * Bordered box
+  * Underline
+
 ## 0.5.1
 * Updated readme
 

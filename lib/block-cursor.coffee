@@ -6,6 +6,15 @@ class BlockCursor
   varsStylesheet: path.join __dirname, '..', 'styles', 'includes', 'vars.less'
 
   config:
+    cursorType:
+      type: 'string'
+      default: 'Block'
+      enum: [
+        'Block'
+        'Bordered box'
+        'I-beam'
+        'Underline'
+      ]
     primaryColor:
       description: 'Primary color of the cursor'
       type: 'color'
@@ -22,6 +31,8 @@ class BlockCursor
       maximum: 500
 
   activate: ->
+    @cursorTypeObserveSubscription =
+      atom.config.observe 'block-cursor.cursorType', (val) => @applyCursorType val
     @primaryColorObserveSubscription =
       atom.config.observe 'block-cursor.primaryColor', (val) => @applyPrimaryColor val
     @secondaryColorObserveSubscription =
@@ -30,18 +41,25 @@ class BlockCursor
       atom.config.observe 'block-cursor.pulseDuration', (val) => @applyPulse val
 
   deactivate: ->
+    @cursorTypeObserveSubscription.dispose()
     @primaryColorObserveSubscription.dispose()
     @secondaryColorObserveSubscription.dispose()
     @pulseDurationObserveSubscription.dispose()
 
-  applyPrimaryColor: (primaryColor) ->
-    @updateLessVariable 'block-cursor-primary-color', primaryColor.toRGBAString()
+  applyCursorType: (cursorType) ->
+    workspaceView = atom.views.getView atom.workspace
+    cursorType = cursorType.toLowerCase().replace ' ', '-'
+    workspaceView.className = workspaceView.className.replace /block-cursor-(block|bordered-box|i-beam|underline)/, ''
+    workspaceView.classList.add "block-cursor-#{cursorType}"
 
-  applySecondaryColor: (secondaryColor) ->
-    @updateLessVariable 'block-cursor-secondary-color', secondaryColor.toRGBAString()
+  applyPrimaryColor: (color) ->
+    @updateLessVariable 'block-cursor-primary-color', color.toRGBAString()
+
+  applySecondaryColor: (color) ->
+    @updateLessVariable 'block-cursor-secondary-color', color.toRGBAString()
 
   applyPulse: (duration) ->
-    @updateLessVariable 'block-cursor-pulse', "background-color #{(duration / 1000).toString()}s"
+    @updateLessVariable 'block-cursor-pulse', "#{duration}ms"
 
   updateLessVariable: (varName, value) ->
     text = fs.readFileSync @varsStylesheet, 'utf8'
