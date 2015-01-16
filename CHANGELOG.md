@@ -1,4 +1,7 @@
-## 0.5.0
+## 0.5.1
+* Updated readme
+
+## 0.5.0 - Fancy pulse
 * Replaced the 'enablePulse' option with 'pulseDuration' option
 
 ## 0.4.6
