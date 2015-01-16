@@ -1,5 +1,11 @@
-## 0.4.1 - Config stuff
+## 0.4.3 - Keeping track
+* Fixed false changelog information
+
+## 0.4.2 - Config stuff
 * Changed the configuration mechanism, much easier to keep track of the config
+
+## 0.4.1 - Cleanup
+* Removed some stray console.logs
 
 ## 0.4.0
 * Added pulse option
