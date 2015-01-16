@@ -1,3 +1,7 @@
+## 0.4.6
+* Fix: make block-cursor.coffee look for vars.less instead of colors.less
+* Fix: make block-cursor.less look for vars.less instead of colors.less
+
 ## 0.4.5
 * Removed the block-cursor class from the workspaceView
 * Removed the block-cursor-pulse class from the workspaceView
