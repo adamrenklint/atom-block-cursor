@@ -13,9 +13,9 @@ Note for those that want a blink-on-blink-off cursor: You can't set the cursor c
 
 #### cursor pulse
 
-As of v0.4.0 there's an option, `enablePulse`, that makes the cursor pulsate rather than blink. It is off by default.
+As of `v0.4.0` there's an option, `enablePulse`, that makes the cursor pulsate rather than blink. It is off by default.
 
-As of v0.5.0 the `enablePulse` option has been replaced with the `pulseDuration` option, which determines the duration of a pulse. If you want to disable the pulse, set this to `0`.
+As of `v0.5.0` the `enablePulse` option has been replaced with the `pulseDuration` option, which determines the duration of a pulse. If you want to disable the pulse, set this to `0`.
 
 ## copyright
 
