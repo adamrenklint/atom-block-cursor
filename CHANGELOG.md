@@ -1,3 +1,6 @@
+## 0.6.1
+* Nicer looking readme
+
 ## 0.6.0 - Cursor galore
 * Added 3 types of cursors. See readme for images
   * I-beam
