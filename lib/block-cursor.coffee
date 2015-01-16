@@ -3,7 +3,7 @@ path = require 'path'
 
 class BlockCursor
   mainStylesheet: path.join __dirname, '..', 'styles', 'block-cursor.less'
-  varsStylesheet: path.join __dirname, '..', 'styles', 'includes', 'colors.less'
+  varsStylesheet: path.join __dirname, '..', 'styles', 'includes', 'vars.less'
 
   config:
     primaryColor:
