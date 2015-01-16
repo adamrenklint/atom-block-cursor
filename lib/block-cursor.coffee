@@ -14,23 +14,25 @@ class BlockCursor
       description: 'Secondary color of the cursor'
       type: 'color'
       default: '#393939'
-    enablePulse:
-      description: 'Fade from primary color to secondary color'
-      type: 'boolean'
-      default: false
+    pulseDuration:
+      description: 'Duration of the pulse in milliseconds, set to 0 to disable pulse'
+      type: 'integer'
+      default: 0
+      minimum: 0
+      maximum: 500
 
   activate: ->
     @primaryColorObserveSubscription =
       atom.config.observe 'block-cursor.primaryColor', (val) => @applyPrimaryColor val
     @secondaryColorObserveSubscription =
       atom.config.observe 'block-cursor.secondaryColor', (val) => @applySecondaryColor val
-    @enablePulseObserveSubscription =
-      atom.config.observe 'block-cursor.enablePulse', (val) => @applyPulse val
+    @pulseDurationObserveSubscription =
+      atom.config.observe 'block-cursor.pulseDuration', (val) => @applyPulse val
 
   deactivate: ->
     @primaryColorObserveSubscription.dispose()
     @secondaryColorObserveSubscription.dispose()
-    @enablePulseObserveSubscription.dispose()
+    @pulseDurationObserveSubscription.dispose()
 
   applyPrimaryColor: (primaryColor) ->
     @updateLessVariable 'block-cursor-primary-color', primaryColor.toRGBAString()
@@ -38,15 +40,13 @@ class BlockCursor
   applySecondaryColor: (secondaryColor) ->
     @updateLessVariable 'block-cursor-secondary-color', secondaryColor.toRGBAString()
 
-  applyPulse: (enabled) ->
-    transition = if enabled then 'background-color .5s' else 'none'
-    @updateLessVariable 'block-cursor-pulse', transition
+  applyPulse: (duration) ->
+    @updateLessVariable 'block-cursor-pulse', "background-color #{(duration / 1000).toString()}s"
 
   updateLessVariable: (varName, value) ->
     text = fs.readFileSync @varsStylesheet, 'utf8'
-    regex = "^@#{varName}:\s.*;$"
-    text.replace regex, ''
-    text += "\n@#{varName}: #{value};"
+    regex = new RegExp "@#{varName}:\s?.*;\n?"
+    text = text.replace regex, "@#{varName}: #{value};\n"
     fs.writeFileSync @varsStylesheet, text
     @reloadStylesheet()
 
