@@ -1,3 +1,6 @@
+## 0.7.1
+* Write less rules to the stylesheet
+
 ## 0.7.0 - Modernizing
 * Removed deprecated functions
   * atom.themes.removeStylesheet
