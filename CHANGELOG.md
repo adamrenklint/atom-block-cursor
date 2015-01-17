@@ -1,3 +1,8 @@
+## 0.7.0 - Modernizing
+* Removed deprecated functions
+  * atom.themes.removeStylesheet
+  * atom.themes.requireStylesheet
+
 ## 0.6.1
 * Nicer looking readme
 
