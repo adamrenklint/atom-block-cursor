@@ -48,24 +48,15 @@ class BlockCursor
     workspaceView = atom.views.getView atom.workspace
     workspaceView.className = workspaceView.className.replace /block-cursor-(block|bordered-box|i-beam|underline)/, ''
     workspaceView.classList.add "block-cursor-#{cursorType}"
-    @applyPrimaryColor()
-    @applySecondaryColor()
 
   applyPrimaryColor: (color) ->
     color ?= atom.config.get 'block-cursor.primaryColor'
-    property = switch @cursorType
-      when 'block' then 'background-color'
-      else 'border-color'
-    value = color.toRGBAString()
-    @updateStylesheet primarySelector, property, value
+    @updateStylesheet primarySelector, 'background-color', color.toRGBAString()
+    @updateStylesheet primarySelector, 'border-color', color.toRGBAString()
 
   applySecondaryColor: (color) ->
-    color ?= atom.config.get 'block-cursor.secondaryColor'
-    property = switch @cursorType
-      when 'block' then 'background-color'
-      else 'border-color'
-    value = color.toRGBAString()
-    @updateStylesheet secondarySelector, property, value
+    @updateStylesheet secondarySelector, 'background-color', color.toRGBAString()
+    @updateStylesheet secondarySelector, 'border-color', color.toRGBAString()
 
   applyPulse: (duration) ->
     @updateStylesheet primarySelector, 'transition-duration', "#{duration}ms"
