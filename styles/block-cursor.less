@@ -1,10 +1,8 @@
-@import "includes/vars";
-
 atom-text-editor::shadow .cursors {
   .cursor {
     opacity: 1!important;
+    color: none;
     transition-property: background-color, border-color;
-    transition-duration: @block-cursor-pulse;
   }
 
   &.blink-off .cursor {
@@ -14,36 +12,25 @@ atom-text-editor::shadow .cursors {
   .block-cursor-block & .cursor {
     border: none!important;
     z-index: -1;
-    background-color: @block-cursor-primary-color;
-  }
-
-  .block-cursor-block &.blink-off .cursor {
-    background-color: @block-cursor-secondary-color;
   }
 
   .block-cursor-bordered-box & .cursor {
-    border: 1px solid @block-cursor-primary-color;
-  }
-
-  .block-cursor-bordered-box &.blink-off .cursor {
-    border: 1px solid @block-cursor-secondary-color;
+    background-color: transparent!important;
+    border-width: 1px;
+    border-style: solid;
   }
 
   .block-cursor-i-beam & .cursor {
-    border-left: 1px solid @block-cursor-primary-color
-  }
-
-  .block-cursor-i-beam &.blink-off .cursor {
-    border-left: 1px solid @block-cursor-secondary-color;
+    background-color: transparent!important;
+    border-left-width: 1px;
+    border-left-style: solid;
   }
 
   .block-cursor-underline & .cursor {
+    background-color: transparent!important;
     border-left: none!important;
-    border-bottom: 1px solid @block-cursor-primary-color;
-  }
-
-  .block-cursor-underline &.blink-off .cursor {
-    border-bottom: 1px solid @block-cursor-secondary-color;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
   }
 }
 

@@ -1,19 +1,17 @@
-fs = require 'fs'
-path = require 'path'
-
 class BlockCursor
-  mainStylesheet: path.join __dirname, '..', 'styles', 'block-cursor.less'
-  varsStylesheet: path.join __dirname, '..', 'styles', 'includes', 'vars.less'
+  cursorStyle = null
+  primarySelector = 'atom-text-editor::shadow .cursors .cursor'
+  secondarySelector = 'atom-text-editor::shadow .cursors.blink-off .cursor'
 
   config:
     cursorType:
       type: 'string'
-      default: 'Block'
+      default: 'block'
       enum: [
-        'Block'
-        'Bordered box'
-        'I-beam'
-        'Underline'
+        'block'
+        'bordered-box'
+        'i-beam'
+        'underline'
       ]
     primaryColor:
       description: 'Primary color of the cursor'
@@ -24,7 +22,7 @@ class BlockCursor
       type: 'color'
       default: '#393939'
     pulseDuration:
-      description: 'Duration of the pulse in milliseconds, set to 0 to disable pulse'
+      description: 'Duration of the pulse transition in milliseconds, set to 0 to disable pulse'
       type: 'integer'
       default: 0
       minimum: 0
@@ -46,30 +44,41 @@ class BlockCursor
     @secondaryColorObserveSubscription.dispose()
     @pulseDurationObserveSubscription.dispose()
 
-  applyCursorType: (cursorType) ->
+  applyCursorType: (@cursorType) ->
     workspaceView = atom.views.getView atom.workspace
-    cursorType = cursorType.toLowerCase().replace ' ', '-'
     workspaceView.className = workspaceView.className.replace /block-cursor-(block|bordered-box|i-beam|underline)/, ''
     workspaceView.classList.add "block-cursor-#{cursorType}"
+    @applyPrimaryColor()
+    @applySecondaryColor()
 
   applyPrimaryColor: (color) ->
-    @updateLessVariable 'block-cursor-primary-color', color.toRGBAString()
+    color ?= atom.config.get 'block-cursor.primaryColor'
+    property = switch @cursorType
+      when 'block' then 'background-color'
+      else 'border-color'
+    value = color.toRGBAString()
+    @updateStylesheet primarySelector, property, value
 
   applySecondaryColor: (color) ->
-    @updateLessVariable 'block-cursor-secondary-color', color.toRGBAString()
+    color ?= atom.config.get 'block-cursor.secondaryColor'
+    property = switch @cursorType
+      when 'block' then 'background-color'
+      else 'border-color'
+    value = color.toRGBAString()
+    @updateStylesheet secondarySelector, property, value
 
   applyPulse: (duration) ->
-    @updateLessVariable 'block-cursor-pulse', "#{duration}ms"
+    @updateStylesheet primarySelector, 'transition-duration', "#{duration}ms"
 
-  updateLessVariable: (varName, value) ->
-    text = fs.readFileSync @varsStylesheet, 'utf8'
-    regex = new RegExp "@#{varName}:\s?.*;\n?"
-    text = text.replace regex, "@#{varName}: #{value};\n"
-    fs.writeFileSync @varsStylesheet, text
-    @reloadStylesheet()
+  getCursorStyle: ->
+    return cursorStyle if cursorStyle?
+    cursorStyle = document.createElement 'style'
+    cursorStyle.type = 'text/css'
+    document.querySelector('head atom-styles').appendChild cursorStyle
+    cursorStyle
 
-  reloadStylesheet: ->
-    atom.themes.removeStylesheet @mainStylesheet
-    atom.themes.requireStylesheet @mainStylesheet
+  updateStylesheet: (selector, property, value) ->
+    sheet = @getCursorStyle().sheet
+    sheet.insertRule "#{selector} { #{property}: #{value}; }", sheet.cssRules.length
 
 module.exports = new BlockCursor()
