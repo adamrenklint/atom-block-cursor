@@ -1,3 +1,6 @@
+## Next
+* Created a map between `cursorType` names/values
+
 ## 0.7.2
 * Show cursor examples in the settings view
 
