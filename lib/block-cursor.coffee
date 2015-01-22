@@ -1,3 +1,6 @@
+'use strict'
+last = (array) -> array[array.length - 1]
+
 class BlockCursor
   cursorStyle = null
   primarySelector = 'atom-text-editor::shadow .cursors .cursor'
@@ -6,12 +9,12 @@ class BlockCursor
   config:
     cursorType:
       type: 'string'
-      default: 'block'
+      default: '\u25AE - block'
       enum: [
-        'block'
-        'bordered-box'
-        'i-beam'
-        'underline'
+        '\u25AE - block'
+        '\u25AF - bordered-box'
+        '| - i-beam'
+        '_ - underline'
       ]
     primaryColor:
       description: 'Primary color of the cursor'
@@ -44,7 +47,8 @@ class BlockCursor
     @secondaryColorObserveSubscription.dispose()
     @pulseDurationObserveSubscription.dispose()
 
-  applyCursorType: (@cursorType) ->
+  applyCursorType: (cursorType) ->
+    @cursorType = cursorType = last cursorType.split ' '
     workspaceView = atom.views.getView atom.workspace
     workspaceView.className = workspaceView.className.replace /block-cursor-(block|bordered-box|i-beam|underline)/, ''
     workspaceView.classList.add "block-cursor-#{cursorType}"
