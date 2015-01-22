@@ -1,5 +1,9 @@
 'use strict'
-last = (array) -> array[array.length - 1]
+cursorTypeMap =
+  '\u25AE - Block': 'block'
+  '\u25AF - Bordered box': 'bordered-box'
+  '| - I-beam': 'i-beam'
+  '_ - Underline': 'underline'
 
 class BlockCursor
   cursorStyle = null
@@ -9,13 +13,8 @@ class BlockCursor
   config:
     cursorType:
       type: 'string'
-      default: '\u25AE - block'
-      enum: [
-        '\u25AE - block'
-        '\u25AF - bordered-box'
-        '| - i-beam'
-        '_ - underline'
-      ]
+      default: '\u25AE - Block'
+      enum: (key for own key of cursorTypeMap)
     primaryColor:
       description: 'Primary color of the cursor'
       type: 'color'
@@ -48,7 +47,7 @@ class BlockCursor
     @pulseDurationObserveSubscription.dispose()
 
   applyCursorType: (cursorType) ->
-    @cursorType = cursorType = last cursorType.split ' '
+    @cursorType = cursorType = cursorTypeMap[cursorType]
     workspaceView = atom.views.getView atom.workspace
     workspaceView.className = workspaceView.className.replace /block-cursor-(block|bordered-box|i-beam|underline)/, ''
     workspaceView.classList.add "block-cursor-#{cursorType}"
