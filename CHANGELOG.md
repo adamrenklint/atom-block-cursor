@@ -1,3 +1,6 @@
+## 0.7.2
+* Show cursor examples in the settings view
+
 ## 0.7.1
 * Write less rules to the stylesheet
 
