@@ -16,7 +16,7 @@ The cursor can be one of the following:
 
 #### primary cursor color & secondary cursor color
 
-The primary and secondary colors determine the color of the cursor in it's `blink-on` and `blink-off` state, respectively. From the settings menu, you can't set transparency, so if you want transparency, that has to be done by editing the `~/.atom/config.cson` file directly. Consult [the docs](https://atom.io/docs/api/latest/Config) about color objects.
+The primary and secondary colors determine the color of the cursor in it's `blink-on` and `blink-off` state, respectively. From the settings menu, you can't set transparency, so if you want transparency, that has to be done by editing the `~/.atom/config.cson` file directly. Consult [the docs](https://atom.io/docs/api/latest/Config#color) about color objects.
 
 #### pulse duration
 
@@ -24,7 +24,19 @@ Set the pulse duration to let the cursor fade from `primary color` to `secondary
 
 ![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-pulse.gif)
 
-<small>Cursor blinking</small>
+## notes
+
+#### cursor not visible if syntax theme uses current-line highlighting
+
+The `block` cursor has a `z-index` of `-1`, so that it will render behind text. Some syntax themes, however, set a `background-color` on the line the cursor is in. This causes the cursor to be invisible. A workaround is to set the following in your `styles.less`:
+
+```
+atom-text-editor::shadow .cursors .cursor {
+  z-index: 1!important;
+}
+```
+
+And add some transparency to the `primaryColor` and `secondaryColor` settings.
 
 ## copyright
 
