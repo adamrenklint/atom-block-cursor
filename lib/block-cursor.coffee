@@ -1,12 +1,11 @@
 'use strict'
-cursorTypeMap =
-  '\u25AE - Block': 'block'
-  '\u25AF - Bordered box': 'bordered-box'
-  '| - I-beam': 'i-beam'
-  '_ - Underline': 'underline'
-
 class BlockCursor
   cursorStyle = null
+  cursorTypeMap =
+    '\u25AE - Block': 'block'
+    '\u25AF - Bordered box': 'bordered-box'
+    '| - I-beam': 'i-beam'
+    '_ - Underline': 'underline'
   primarySelector = 'atom-text-editor::shadow .cursors .cursor'
   secondarySelector = 'atom-text-editor::shadow .cursors.blink-off .cursor'
 
@@ -46,8 +45,8 @@ class BlockCursor
     @secondaryColorObserveSubscription.dispose()
     @pulseDurationObserveSubscription.dispose()
 
-  applyCursorType: (cursorType) ->
-    @cursorType = cursorType = cursorTypeMap[cursorType]
+  applyCursorType: (cursorTypeName) ->
+    @cursorType = cursorType = cursorTypeMap[cursorTypeName]
     workspaceView = atom.views.getView atom.workspace
     workspaceView.className = workspaceView.className.replace /block-cursor-(block|bordered-box|i-beam|underline)/, ''
     workspaceView.classList.add "block-cursor-#{cursorType}"
