@@ -30,6 +30,7 @@ class BlockCursor
       maximum: 500
 
   activate: ->
+    console.log atom.config.get 'block-cursor.primaryColor'
     @cursorTypeObserveSubscription =
       atom.config.observe 'block-cursor.cursorType', (val) => @applyCursorType val
     @primaryColorObserveSubscription =
@@ -52,13 +53,16 @@ class BlockCursor
     workspaceView.classList.add "block-cursor-#{cursorType}"
 
   applyPrimaryColor: (color) ->
-    color ?= atom.config.get 'block-cursor.primaryColor'
-    @updateStylesheet primarySelector, 'background-color', color.toRGBAString()
-    @updateStylesheet primarySelector, 'border-color', color.toRGBAString()
+    unless color?.toRGBAString? then color = atom.config.get 'block-cursor.primaryColor'
+    color = color.toRGBAString?() or @toRGBAString color
+    @updateStylesheet primarySelector, 'background-color', color
+    @updateStylesheet primarySelector, 'border-color', color
 
   applySecondaryColor: (color) ->
-    @updateStylesheet secondarySelector, 'background-color', color.toRGBAString()
-    @updateStylesheet secondarySelector, 'border-color', color.toRGBAString()
+    unless color?.toRGBAString? then color = atom.config.get 'block-cursor.secondaryColor'
+    color = color.toRGBAString?() or @toRGBAString color
+    @updateStylesheet secondarySelector, 'background-color', color
+    @updateStylesheet secondarySelector, 'border-color', color
 
   applyPulse: (duration) ->
     @updateStylesheet primarySelector, 'transition-duration', "#{duration}ms"
@@ -73,5 +77,9 @@ class BlockCursor
   updateStylesheet: (selector, property, value) ->
     sheet = @getCursorStyle().sheet
     sheet.insertRule "#{selector} { #{property}: #{value}; }", sheet.cssRules.length
+
+  toRGBAString: (color) ->
+    return color unless color.red? and color.green? and color.blue? and color.alpha?
+    "rgba(#{color.red}, #{color.green}, #{color.blue}, #{color.alpha})"
 
 module.exports = new BlockCursor()
