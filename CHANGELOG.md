@@ -1,5 +1,8 @@
-## Next
-* Created a map between `cursorType` names/values
+## 0.7.4
+* Workaround for [#atom/5306](https://github.com/atom/atom/issues/5306)
+
+## 0.7.3
+* Created a map between `cursorType` names/values for clearer options in the settings view select box
 
 ## 0.7.2
 * Show cursor examples in the settings view
