@@ -30,7 +30,6 @@ class BlockCursor
       maximum: 500
 
   activate: ->
-    console.log atom.config.get 'block-cursor.primaryColor'
     @cursorTypeObserveSubscription =
       atom.config.observe 'block-cursor.cursorType', (val) => @applyCursorType val
     @primaryColorObserveSubscription =
