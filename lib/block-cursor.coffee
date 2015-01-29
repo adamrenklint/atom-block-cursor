@@ -78,7 +78,7 @@ class BlockCursor
     sheet.insertRule "#{selector} { #{property}: #{value}; }", sheet.cssRules.length
 
   toRGBAString: (color) ->
-    return color unless color.red? and color.green? and color.blue? and color.alpha?
+    return color if typeof color is 'string' and color.match /#([0-9A-Fa-f]{3}){1,2}|rgba\(\d{1,3}(,\s?\d{1,3}){2},\s?(1|0?\.\d+)\)|rgb\(\d{1,3}(,\s?\d{1,3}\){2})/
     "rgba(#{color.red}, #{color.green}, #{color.blue}, #{color.alpha})"
 
 module.exports = new BlockCursor()
