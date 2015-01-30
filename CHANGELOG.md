@@ -1,3 +1,6 @@
+## 0.7.5
+* Fix: remove cursorStyle element from the dom on package deactivation
+
 ## 0.7.4
 * Workaround for [#atom/5306](https://github.com/atom/atom/issues/5306)
 
