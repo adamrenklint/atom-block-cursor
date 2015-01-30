@@ -44,6 +44,8 @@ class BlockCursor
     @primaryColorObserveSubscription.dispose()
     @secondaryColorObserveSubscription.dispose()
     @pulseDurationObserveSubscription.dispose()
+    cursorStyle.parentNode.removeChild cursorStyle
+    cursorStyle = null
 
   applyCursorType: (cursorTypeName) ->
     @cursorType = cursorType = cursorTypeMap[cursorTypeName]
