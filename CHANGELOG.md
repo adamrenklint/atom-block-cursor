@@ -1,3 +1,6 @@
+## 0.7.6
+* Use CompositeDisposable for the config subscriptions
+
 ## 0.7.5
 * Fix: remove cursorStyle element from the dom on package deactivation
 
