@@ -51,13 +51,11 @@ class BlockCursor
     workspaceView.classList.add "block-cursor-#{cursorType}"
 
   applyPrimaryColor: (color) ->
-    unless color?.toRGBAString? then color = atom.config.get 'block-cursor.primaryColor'
     color = color.toRGBAString?() or @toRGBAString color
     @updateStylesheet primarySelector, 'background-color', color
     @updateStylesheet primarySelector, 'border-color', color
 
   applySecondaryColor: (color) ->
-    unless color?.toRGBAString? then color = atom.config.get 'block-cursor.secondaryColor'
     color = color.toRGBAString?() or @toRGBAString color
     @updateStylesheet secondarySelector, 'background-color', color
     @updateStylesheet secondarySelector, 'border-color', color
@@ -77,7 +75,8 @@ class BlockCursor
     sheet.insertRule "#{selector} { #{property}: #{value}; }", sheet.cssRules.length
 
   toRGBAString: (color) ->
-    return color if typeof color is 'string' and color.match /#([0-9A-Fa-f]{3}){1,2}|rgba\(\d{1,3}(,\s?\d{1,3}){2},\s?(1|0?\.\d+)\)|rgb\(\d{1,3}(,\s?\d{1,3}\){2})/
+    return color if typeof color is 'string'
+    return unless color.red and color.green and color.blue and color.alpha
     "rgba(#{color.red}, #{color.green}, #{color.blue}, #{color.alpha})"
 
 module.exports = new BlockCursor()
