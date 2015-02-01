@@ -1,4 +1,6 @@
 'use strict'
+{CompositeDisposable} = require 'atom'
+
 class BlockCursor
   cursorStyle = null
   cursorTypeMap =
@@ -30,22 +32,17 @@ class BlockCursor
       maximum: 500
 
   activate: ->
-    @cursorTypeObserveSubscription =
-      atom.config.observe 'block-cursor.cursorType', (val) => @applyCursorType val
-    @primaryColorObserveSubscription =
-      atom.config.observe 'block-cursor.primaryColor', (val) => @applyPrimaryColor val
-    @secondaryColorObserveSubscription =
-      atom.config.observe 'block-cursor.secondaryColor', (val) => @applySecondaryColor val
-    @pulseDurationObserveSubscription =
-      atom.config.observe 'block-cursor.pulseDuration', (val) => @applyPulse val
+    @subs = new CompositeDisposable()
+    @subs.add atom.config.observe 'block-cursor.cursorType', @applyCursorType.bind @
+    @subs.add atom.config.observe 'block-cursor.primaryColor', @applyPrimaryColor.bind @
+    @subs.add atom.config.observe 'block-cursor.secondaryColor', @applySecondaryColor.bind @
+    @subs.add atom.config.observe 'block-cursor.pulseDuration', @applyPulseDuration.bind @
 
   deactivate: ->
-    @cursorTypeObserveSubscription.dispose()
-    @primaryColorObserveSubscription.dispose()
-    @secondaryColorObserveSubscription.dispose()
-    @pulseDurationObserveSubscription.dispose()
-    cursorStyle.parentNode.removeChild cursorStyle
-    cursorStyle = null
+    @subs.dispose()
+    if cursorStyle?
+      cursorStyle.parentNode.removeChild cursorStyle
+      cursorStyle = null
 
   applyCursorType: (cursorTypeName) ->
     @cursorType = cursorType = cursorTypeMap[cursorTypeName]
@@ -65,7 +62,7 @@ class BlockCursor
     @updateStylesheet secondarySelector, 'background-color', color
     @updateStylesheet secondarySelector, 'border-color', color
 
-  applyPulse: (duration) ->
+  applyPulseDuration: (duration) ->
     @updateStylesheet primarySelector, 'transition-duration', "#{duration}ms"
 
   getCursorStyle: ->
