@@ -30,7 +30,7 @@ Set the pulse duration to let the cursor fade from `primary color` to `secondary
 
 The `block` cursor has a `z-index` of `-1`, so that it will render behind text. Some syntax themes, however, set a `background-color` on the line the cursor is in. This causes the cursor to be invisible. A workaround is to set the following in your `styles.less`:
 
-```
+```csss
 atom-text-editor::shadow .cursors .cursor {
   z-index: 1!important;
 }
