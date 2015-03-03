@@ -1,3 +1,6 @@
+## 0.8.1
+* Added preview field to the package settings
+
 ## 0.8.0
 * Added `cursorThickness` option
 
