@@ -1,3 +1,6 @@
+## 0.8.0
+* Added `cursorThickness` option
+
 ## 0.7.6
 * Use CompositeDisposable for the config subscriptions
 
@@ -34,7 +37,7 @@
 * Updated readme
 
 ## 0.5.0 - Fancy pulse
-* Replaced the 'enablePulse' option with 'pulseDuration' option
+* Replaced the `enablePulse` option with `pulseDuration` option
 
 ## 0.4.6
 * Fix: make block-cursor.coffee look for vars.less instead of colors.less
@@ -65,9 +68,9 @@
 * Slightly changed the atom-text-editor[mini] selector
 
 ## 0.3.0 - Fancy blinking
-* Removed 'cursorBlink' option
-* Renamed 'cursorColor' option -> 'primaryColor'
-* Added 'secondaryColor' option
+* Removed `cursorBlink` option
+* Renamed `cursorColor` option -> `primaryColor`
+* Added `secondaryColor` option
 
 ## 0.2.4 - Specs
 * Created specs for testing
@@ -79,10 +82,10 @@
 * Fixed capitalization in config descriptions
 
 ## 0.2.1 - Blinking cursors
-* Fixed the 'cursorBlink' config option
+* Fixed the `cursorBlink` config option
 
 ## 0.2.0 - Config color
-* Using new 'color' type for the cursorColor option
+* Using new `color` type for the cursorColor option
 
 ## 0.1.1 - Readme fix
 * Fixed the image's url in the readme
