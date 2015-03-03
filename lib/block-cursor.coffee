@@ -35,6 +35,10 @@ class BlockCursor
       type: 'integer'
       default: 1
       minimum: 1
+    zzzpreview:
+      title: 'Preview'
+      description: 'This field does nothing, it\'s just here to preview your cursor'
+      type: 'string'
 
   activate: ->
     @subs = new CompositeDisposable()
@@ -43,6 +47,7 @@ class BlockCursor
     @subs.add atom.config.observe 'block-cursor.secondaryColor', @applySecondaryColor.bind @
     @subs.add atom.config.observe 'block-cursor.pulseDuration', @applyPulseDuration.bind @
     @subs.add atom.config.observe 'block-cursor.cursorThickness', @applyCursorThickness.bind @
+    atom.config.set 'block-cursor.zzzpreview', 'The quick brown fox jumps over the lazy dog'
 
   deactivate: ->
     @subs.dispose()
