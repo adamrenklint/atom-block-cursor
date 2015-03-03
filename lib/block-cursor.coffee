@@ -30,6 +30,11 @@ class BlockCursor
       default: 0
       minimum: 0
       maximum: 500
+    cursorThickness:
+      description: 'Thickness of the cursor. Doesn\'t apply to "block" cursor type'
+      type: 'integer'
+      default: 1
+      minimum: 1
 
   activate: ->
     @subs = new CompositeDisposable()
@@ -37,6 +42,7 @@ class BlockCursor
     @subs.add atom.config.observe 'block-cursor.primaryColor', @applyPrimaryColor.bind @
     @subs.add atom.config.observe 'block-cursor.secondaryColor', @applySecondaryColor.bind @
     @subs.add atom.config.observe 'block-cursor.pulseDuration', @applyPulseDuration.bind @
+    @subs.add atom.config.observe 'block-cursor.cursorThickness', @applyCursorThickness.bind @
 
   deactivate: ->
     @subs.dispose()
@@ -45,7 +51,7 @@ class BlockCursor
       cursorStyle = null
 
   applyCursorType: (cursorTypeName) ->
-    @cursorType = cursorType = cursorTypeMap[cursorTypeName]
+    cursorType = cursorTypeMap[cursorTypeName]
     workspaceView = atom.views.getView atom.workspace
     workspaceView.className = workspaceView.className.replace /block-cursor-(block|bordered-box|i-beam|underline)/, ''
     workspaceView.classList.add "block-cursor-#{cursorType}"
@@ -62,6 +68,9 @@ class BlockCursor
 
   applyPulseDuration: (duration) ->
     @updateStylesheet primarySelector, 'transition-duration', "#{duration}ms"
+
+  applyCursorThickness: (thickness) ->
+    @updateStylesheet primarySelector, 'border-width', "#{thickness}px"
 
   getCursorStyle: ->
     return cursorStyle if cursorStyle?
