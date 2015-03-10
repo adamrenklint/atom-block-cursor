@@ -26,7 +26,7 @@ class BlockCursor
       type: 'color'
       default: 'transparent'
     blinkInterval:
-      description: 'Interval of the cursor blink - the period between primaryColor and secondaryColor - in milliseconds. Set to 0 to disable blinking (Note: doesn\'t apply to mini editors yet)'
+      description: 'Interval of the cursor blink - the period between primaryColor and secondaryColor - in milliseconds. Set to 0 to disable blinking.'
       type: 'integer'
       default: 400
       minimum: 0
