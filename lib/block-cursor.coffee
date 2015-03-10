@@ -58,7 +58,7 @@ class BlockCursor
 
   deactivate: ->
     @subs.dispose()
-    @editorSub.dispose()
+    @editorSub?.dispose?()
     if cursorStyle?
       cursorStyle.parentNode.removeChild cursorStyle
       cursorStyle = null
