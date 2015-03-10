@@ -63,8 +63,8 @@ class BlockCursor
       cursorStyle.parentNode.removeChild cursorStyle
       cursorStyle = null
 
-  applyCursorType: (cursorTypeName) =>
-    cursorType = cursorTypeMap[cursorTypeName]
+  applyCursorType: (cursorTypeName) ->
+    cursorType = cursorTypeMap[cursorTypeName] ? cursorTypeName
     workspaceView = atom.views.getView atom.workspace
     workspaceView.className = workspaceView.className.replace /block-cursor-(block|bordered-box|i-beam|underline)/, ''
     workspaceView.className += " block-cursor-#{cursorType}"
@@ -85,7 +85,8 @@ class BlockCursor
     (interval) ->
       sub?.dispose?()
       sub = atom.workspace.observeTextEditors (editor) ->
-        editorPresenter = atom.views.getView(editor).component.presenter
+        editorPresenter = atom.views.getView(editor)?.component?.presenter
+        return unless editorPresenter
         editorPresenter.stopBlinkingCursors true
         if interval > 0
           editorPresenter.cursorBlinkPeriod = interval
