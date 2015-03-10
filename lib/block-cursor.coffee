@@ -85,16 +85,18 @@ class BlockCursor
     (interval) ->
       sub?.dispose?()
       sub = atom.workspace.observeTextEditors (editor) ->
-        editorPresenter = atom.views.getView(editor)?.component?.presenter
-        return unless editorPresenter
-        editorPresenter.stopBlinkingCursors true
-        if interval > 0
-          editorPresenter.cursorBlinkPeriod = interval
-          atom.config.set 'block-cursor.secondaryColor', 'transparent'
-        else
-          editorPresenter.cursorBlinkPeriod = -1 + Math.pow 2, 31
-          atom.config.set 'block-cursor.secondaryColor', atom.config.get 'block-cursor.primaryColor'
-        editorPresenter.startBlinkingCursors()
+        setTimeout ->
+          editorPresenter = atom.views.getView(editor).component.presenter
+          # return unless editorPresenter
+          editorPresenter.stopBlinkingCursors true
+          if interval > 0
+            editorPresenter.cursorBlinkPeriod = interval
+            atom.config.set 'block-cursor.secondaryColor', 'transparent'
+          else
+            editorPresenter.cursorBlinkPeriod = -1 + Math.pow 2, 31
+            atom.config.set 'block-cursor.secondaryColor', atom.config.get 'block-cursor.primaryColor'
+          editorPresenter.startBlinkingCursors()
+        , 0
       @subs.add sub
 
   applyPulseDuration: (duration) =>
