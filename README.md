@@ -20,7 +20,9 @@ The primary and secondary colors determine the color of the cursor in it's `blin
 
 #### blink interval
 
-Set the blinking interval of the cursor
+The blinking interval of the cursor. Set to `0` to disable cursor blinking.
+
+Note: If set to `0`, this also sets `secondaryColor` to equal `primaryColor` as a workaround for the `mini` editors still having blinking cursors.
 
 #### pulse duration
 
