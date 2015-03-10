@@ -18,6 +18,10 @@ The cursor can be one of the following:
 
 The primary and secondary colors determine the color of the cursor in it's `blink-on` and `blink-off` state, respectively. From the settings menu, you can't set transparency, so if you want transparency, that has to be done by editing the `~/.atom/config.cson` file directly. Consult [the docs](https://atom.io/docs/api/latest/Config#color) about color objects.
 
+#### blink interval
+
+Set the blinking interval of the cursor
+
 #### pulse duration
 
 Set the pulse duration to let the cursor fade from `primary color` to `secondary color`, instead of the default blinking behavior.
