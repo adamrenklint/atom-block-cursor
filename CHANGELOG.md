@@ -1,5 +1,9 @@
 # block-cursor changelog
 
+## 0.9.5
+* Fix cursor blink
+* Remove underscore dependency
+
 ## 0.9.4
 * Fix `blinkInterval` config description
 
@@ -7,7 +11,6 @@
 * Updated readme's `blink interval` section
 * Set default value for the `preview` field, to avoid a warning at activation
 * Workaround for disabling cursor blinking in `mini` editors
-
 
 ## 0.9.2
 * Fixed issue where package deactivation sometimes throws an exception
