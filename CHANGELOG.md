@@ -1,3 +1,6 @@
+## 0.9.2
+* Fixed issue where package deactivation sometimes throws an exception
+
 ## 0.9.1
 * Changed `blinkInterval`'s default from 500 to 400 to match Atom's default behavior
 * Dispose of editor subscription on package deactivation
