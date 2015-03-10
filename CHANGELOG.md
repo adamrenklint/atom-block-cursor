@@ -1,5 +1,8 @@
 # block-cursor changelog
 
+## 0.9.4
+* Fix `blinkInterval` config description
+
 ## 0.9.3
 * Updated readme's `blink interval` section
 * Set default value for the `preview` field, to avoid a warning at activation
