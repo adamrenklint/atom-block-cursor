@@ -1,6 +1,5 @@
 'use strict'
 {CompositeDisposable} = require 'atom'
-_ = require 'underscore'
 
 class BlockCursor
   cursorStyle = null
@@ -26,9 +25,9 @@ class BlockCursor
       type: 'color'
       default: 'transparent'
     blinkInterval:
-      description: 'Interval of the cursor blink - the period between primaryColor and secondaryColor - in milliseconds. Set to 0 to disable blinking.'
+      description: 'Cursor blinking interval in milliseconds. Set to 0 to disable blinking. Doesn\'t work for mini editors, except for disabling cursor blinking'
       type: 'integer'
-      default: 400
+      default: 800
       minimum: 0
     pulseDuration:
       description: 'Duration of the pulse transition in milliseconds, set to 0 to disable pulse'
@@ -48,55 +47,59 @@ class BlockCursor
 
   activate: ->
     @subs = new CompositeDisposable()
-    @subs.add atom.config.observe 'block-cursor.cursorType', @applyCursorType.bind @
-    @subs.add atom.config.observe 'block-cursor.primaryColor', @applyPrimaryColor.bind @
-    @subs.add atom.config.observe 'block-cursor.secondaryColor', @applySecondaryColor.bind @
-    @subs.add atom.config.observe 'block-cursor.blinkInterval', @applyBlinkInterval.bind @
-    @subs.add atom.config.observe 'block-cursor.pulseDuration', @applyPulseDuration.bind @
-    @subs.add atom.config.observe 'block-cursor.cursorThickness', @applyCursorThickness.bind @
+    @subs.add [
+      atom.config.observe 'block-cursor.cursorType', @applyCursorType
+      atom.config.observe 'block-cursor.primaryColor', @applyPrimaryColor
+      atom.config.observe 'block-cursor.secondaryColor', @applySecondaryColor
+      atom.config.observe 'block-cursor.blinkInterval', @applyBlinkInterval.bind @
+      atom.config.observe 'block-cursor.pulseDuration', @applyPulseDuration
+      atom.config.observe 'block-cursor.cursorThickness', @applyCursorThickness
+    ]
     atom.config.set 'block-cursor.zzzpreview', 'The quick brown fox jumps over the lazy dog'
-    @editorSub = null
 
   deactivate: ->
     @subs.dispose()
-    @editorSub?.dispose?()
     if cursorStyle?
       cursorStyle.parentNode.removeChild cursorStyle
       cursorStyle = null
 
-  applyCursorType: (cursorTypeName) ->
+  applyCursorType: (cursorTypeName) =>
     cursorType = cursorTypeMap[cursorTypeName]
     workspaceView = atom.views.getView atom.workspace
     workspaceView.className = workspaceView.className.replace /block-cursor-(block|bordered-box|i-beam|underline)/, ''
-    workspaceView.classList.add "block-cursor-#{cursorType}"
+    workspaceView.className += " block-cursor-#{cursorType}"
 
-  applyPrimaryColor: (color) ->
+  applyPrimaryColor: (color) =>
     color = color.toRGBAString?() or @toRGBAString color
     @updateStylesheet primarySelector, 'background-color', color
     @updateStylesheet primarySelector, 'border-color', color
 
-  applySecondaryColor: (color) ->
+  applySecondaryColor: (color) =>
     color = color.toRGBAString?() or @toRGBAString color
     @updateStylesheet secondarySelector, 'background-color', color
     @updateStylesheet secondarySelector, 'border-color', color
 
-  applyBlinkInterval: (interval) ->
-    @editorSub?.dispose?()
-    @editorSub = atom.workspace.observeTextEditors (editor) ->
-      editorPresenter = atom.views.getView(editor).component.presenter
-      editorPresenter.cursorBlinkPeriod = interval * 2
-      editorPresenter.stopBlinkingCursors(true)
-      if interval > 0
-        editorPresenter.startBlinkingCursorsAfterDelay = do ->
-          _.debounce(editorPresenter.startBlinkingCursors, editorPresenter.getCursorBlinkResumeDelay())
-      else
-        atom.config.set 'block-cursor.secondaryColor', atom.config.get 'block-cursor.primaryColor'
-        editorPresenter.startBlinkingCursorsAfterDelay = ->
+  applyBlinkInterval: do ->
+    sub = null
 
-  applyPulseDuration: (duration) ->
+    (interval) ->
+      sub?.dispose?()
+      sub = atom.workspace.observeTextEditors (editor) ->
+        editorPresenter = atom.views.getView(editor).component.presenter
+        editorPresenter.stopBlinkingCursors true
+        if interval > 0
+          editorPresenter.cursorBlinkPeriod = interval
+          atom.config.set 'block-cursor.secondaryColor', 'transparent'
+        else
+          editorPresenter.cursorBlinkPeriod = -1 + Math.pow 2, 31
+          atom.config.set 'block-cursor.secondaryColor', atom.config.get 'block-cursor.primaryColor'
+        editorPresenter.startBlinkingCursors()
+      @subs.add sub
+
+  applyPulseDuration: (duration) =>
     @updateStylesheet primarySelector, 'transition-duration', "#{duration}ms"
 
-  applyCursorThickness: (thickness) ->
+  applyCursorThickness: (thickness) =>
     @updateStylesheet primarySelector, 'border-width', "#{thickness}px"
 
   getCursorStyle: ->
