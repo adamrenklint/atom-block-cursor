@@ -1,5 +1,8 @@
 # block-cursor changelog
 
+## 0.9.7
+* Better fix for #5
+
 ## 0.9.6
 * Fix #5
 
