@@ -1,5 +1,8 @@
 # block-cursor changelog
 
+## 0.9.6
+* Fix #5
+
 ## 0.9.5
 * Fix cursor blink
 * Remove underscore dependency
