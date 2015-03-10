@@ -1,3 +1,7 @@
+## 0.9.0
+* Added `blinkInterval` option
+* Removed `pulseDuration` maximum
+
 ## 0.8.1
 * Added preview field to the package settings
 
