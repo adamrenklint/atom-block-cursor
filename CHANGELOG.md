@@ -1,3 +1,7 @@
+## 0.9.1
+* Changed `blinkInterval`'s default from 500 to 400 to match Atom's default behavior
+* Dispose of editor subscription on package deactivation
+
 ## 0.9.0
 * Added `blinkInterval` option
 * Removed `pulseDuration` maximum
