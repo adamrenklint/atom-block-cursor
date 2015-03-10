@@ -1,5 +1,6 @@
 'use strict'
 {CompositeDisposable} = require 'atom'
+_ = require 'underscore'
 
 class BlockCursor
   cursorStyle = null
@@ -23,15 +24,19 @@ class BlockCursor
     secondaryColor:
       description: 'Secondary color of the cursor'
       type: 'color'
-      default: '#393939'
+      default: 'transparent'
+    blinkInterval:
+      description: 'Interval of the cursor blink - the period between primaryColor and secondaryColor - in milliseconds. Set to 0 to disable blinking (Note: doesn\'t apply to mini editors yet)'
+      type: 'integer'
+      default: 500
+      minimum: 0
     pulseDuration:
       description: 'Duration of the pulse transition in milliseconds, set to 0 to disable pulse'
       type: 'integer'
       default: 0
       minimum: 0
-      maximum: 500
     cursorThickness:
-      description: 'Thickness of the cursor. Doesn\'t apply to "block" cursor type'
+      description: 'Thickness of the cursor in pixels. Doesn\'t apply to "block" cursor type'
       type: 'integer'
       default: 1
       minimum: 1
@@ -45,9 +50,11 @@ class BlockCursor
     @subs.add atom.config.observe 'block-cursor.cursorType', @applyCursorType.bind @
     @subs.add atom.config.observe 'block-cursor.primaryColor', @applyPrimaryColor.bind @
     @subs.add atom.config.observe 'block-cursor.secondaryColor', @applySecondaryColor.bind @
+    @subs.add atom.config.observe 'block-cursor.blinkInterval', @applyBlinkInterval.bind @
     @subs.add atom.config.observe 'block-cursor.pulseDuration', @applyPulseDuration.bind @
     @subs.add atom.config.observe 'block-cursor.cursorThickness', @applyCursorThickness.bind @
     atom.config.set 'block-cursor.zzzpreview', 'The quick brown fox jumps over the lazy dog'
+    @editorSub = null
 
   deactivate: ->
     @subs.dispose()
@@ -70,6 +77,18 @@ class BlockCursor
     color = color.toRGBAString?() or @toRGBAString color
     @updateStylesheet secondarySelector, 'background-color', color
     @updateStylesheet secondarySelector, 'border-color', color
+
+  applyBlinkInterval: (interval) ->
+    @editorSub?.dispose?()
+    @editorSub = atom.workspace.observeTextEditors (editor) ->
+      editorPresenter = atom.views.getView(editor).component.presenter
+      editorPresenter.cursorBlinkPeriod = interval * 2
+      editorPresenter.stopBlinkingCursors(true)
+      if interval > 0
+        editorPresenter.startBlinkingCursorsAfterDelay = do ->
+          _.debounce(editorPresenter.startBlinkingCursors, editorPresenter.getCursorBlinkResumeDelay())
+      else
+        editorPresenter.startBlinkingCursorsAfterDelay = ->
 
   applyPulseDuration: (duration) ->
     @updateStylesheet primarySelector, 'transition-duration', "#{duration}ms"
