@@ -1,7 +1,7 @@
 {
   "name": "block-cursor",
   "main": "./lib/block-cursor",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "Fancy cursor custimization",
   "repository": "https://github.com/olmokramer/atom-block-cursor",
   "license": "MIT",
