@@ -28,7 +28,7 @@ class BlockCursor
     blinkInterval:
       description: 'Interval of the cursor blink - the period between primaryColor and secondaryColor - in milliseconds. Set to 0 to disable blinking (Note: doesn\'t apply to mini editors yet)'
       type: 'integer'
-      default: 500
+      default: 400
       minimum: 0
     pulseDuration:
       description: 'Duration of the pulse transition in milliseconds, set to 0 to disable pulse'
@@ -58,6 +58,7 @@ class BlockCursor
 
   deactivate: ->
     @subs.dispose()
+    @editorSub.dispose()
     if cursorStyle?
       cursorStyle.parentNode.removeChild cursorStyle
       cursorStyle = null
