@@ -44,6 +44,7 @@ class BlockCursor
       title: 'Preview'
       description: 'This field does nothing, it\'s just here to preview your cursor'
       type: 'string'
+      default: ''
 
   activate: ->
     @subs = new CompositeDisposable()
@@ -89,6 +90,7 @@ class BlockCursor
         editorPresenter.startBlinkingCursorsAfterDelay = do ->
           _.debounce(editorPresenter.startBlinkingCursors, editorPresenter.getCursorBlinkResumeDelay())
       else
+        atom.config.set 'block-cursor.secondaryColor', atom.config.get 'block-cursor.primaryColor'
         editorPresenter.startBlinkingCursorsAfterDelay = ->
 
   applyPulseDuration: (duration) ->
