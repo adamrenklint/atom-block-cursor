@@ -21,7 +21,6 @@ Because Chrome's color picker on Linux doesn't support the alpha channel, there'
 #### blink interval
 
 The blinking interval of the cursor. Set to `0` to disable cursor blinking.
-Other than disabling cursor blink, this doesn't work in the `mini` editors.
 
 #### pulse duration
 
@@ -29,9 +28,17 @@ A pulse effect that fades the cursor from `primaryColor` to `secondaryColor`. Se
 
 ![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-pulse.gif)
 
+#### cursor thickness
+
+The thickness of the non-block cursors.
+
 #### cursor line fix
 
-When your syntax theme uses a `background-color` on `.cursor-line` - the line the cursor is on, the `block` cursor may become invisible. This is because the cursor has a `z-index` of `-1`, to make it render behind the text instead of above it. This fix sets the cursor's `z-index` to `1`, to make it render above the text, so you should use very low `alpha` values for `primaryColor` and `secondaryColor` if you enable this fix.
+When your syntax theme uses a `background-color` on `.cursor-line` - the line the cursor is on - the `block` cursor may become invisible. This is because the cursor has a `z-index` of `-1`, to make it render behind the text instead of above it. This fix sets the cursor's `z-index` to `1`, to make it render above the text, so you should use very low `alpha` values for `primaryColor` and `secondaryColor` if you enable this fix.
+
+## Known issues
+
+* Blink interval doesn't work in `mini` editors - the single line input fields in settings for example - except for disabling blink.
 
 ## copyright
 
