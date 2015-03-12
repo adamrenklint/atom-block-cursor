@@ -70,14 +70,14 @@ class BlockCursor
     workspaceView.className += " block-cursor-#{cursorType}"
 
   applyPrimaryColor: (color) =>
-    color = color.toRGBAString?() or @toRGBAString color
+    color = @toRGBAString color
     @updateStylesheet primarySelector, 'background-color', color
     @updateStylesheet primarySelector, 'border-color', color
 
   applySecondaryColor: (color) =>
-    if atom.config.get 'block-cursor.blinkInterval' is 0
+    unless 0 < atom.config.get 'block-cursor.blinkInterval'
       color = atom.config.get 'block-cursor.primaryColor'
-    color = color.toRGBAString?() or @toRGBAString color
+    color = @toRGBAString color
     @updateStylesheet secondarySelector, 'background-color', color
     @updateStylesheet secondarySelector, 'border-color', color
 
@@ -117,7 +117,8 @@ class BlockCursor
 
   toRGBAString: (color) ->
     return color if typeof color is 'string'
-    return unless color.red and color.green and color.blue and color.alpha
+    return color.toRGBAString() if color.toRGBAString?
+    return unless color.red? and color.green? and color.blue? and color.alpha?
     "rgba(#{color.red}, #{color.green}, #{color.blue}, #{color.alpha})"
 
 module.exports = new BlockCursor()
