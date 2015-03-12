@@ -1,5 +1,10 @@
 # block-cursor changelog
 
+## 0.10.0
+* Add separate alpha channel configs for both the color configs because the color picker on Linux doesn't support them.
+* Add fix for syntax themes with a `background-color` on the `.cursor-line`
+* Some rewriting
+
 ## 0.9.9
 * Fix #6
 
