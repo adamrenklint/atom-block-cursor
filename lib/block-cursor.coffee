@@ -60,7 +60,6 @@ class BlockCursor
       minimum: 1
       order: 7
     preview:
-      title: 'Preview'
       description: 'This field does nothing, it\'s just here to preview your cursor. The blinkInterval setting does not work in this field.'
       type: 'string'
       default: ''
@@ -95,14 +94,16 @@ class BlockCursor
   applyCursorType: (cursorTypeName) ->
     cursorType = cursorTypeMap[cursorTypeName] ? cursorTypeName
     workspaceView = atom.views.getView atom.workspace
-    workspaceView.className = workspaceView.className.replace /block-cursor-(block|bordered-box|i-beam|underline)/, ''
-    workspaceView.className += " block-cursor-#{cursorType}"
+    workspaceView.className = workspaceView.className.replace /block-cursor-(?:block|bordered-box|i-beam|underline)/, ''
+    workspaceView.classList.add "block-cursor-#{cursorType}"
 
-  applyPrimaryColor: (color) =>
-    @updateStylesheet primarySelector, 'background-color', color.toRGBAString()
-    @updateStylesheet primarySelector, 'border-color', color.toRGBAString()
+  applyPrimaryColor: (color = @getConfig 'primaryColor') =>
+    color = color.toRGBAString()
+    @updateStylesheet primarySelector, 'background-color', color
+    @updateStylesheet primarySelector, 'border-color', color
     if 0 is @getConfig 'blinkInterval'
-      @applySecondaryColor()
+      @updateStylesheet secondarySelector, 'background-color', color
+      @updateStylesheet secondarySelector, 'border-color', color
 
   applyPrimaryColorAlpha: (alpha) =>
     primaryColor = @getConfig 'primaryColor'
@@ -112,10 +113,9 @@ class BlockCursor
   applySecondaryColor: (color) =>
     if 0 is @getConfig 'blinkInterval'
       color = @getConfig 'primaryColor'
-    else
-      color ?= @getConfig 'secondaryColor'
-    @updateStylesheet secondarySelector, 'background-color', color.toRGBAString()
-    @updateStylesheet secondarySelector, 'border-color', color.toRGBAString()
+    color = color.toRGBAString()
+    @updateStylesheet secondarySelector, 'background-color', color
+    @updateStylesheet secondarySelector, 'border-color', color
 
   applySecondaryColorAlpha: (alpha) =>
     secondaryColor = @getConfig 'secondaryColor'
@@ -126,16 +126,16 @@ class BlockCursor
     sub = null
 
     (interval) ->
-      sub?.dispose?()
+      sub?.dispose()
       sub = atom.workspace.observeTextEditors (editor) =>
         setTimeout =>
           editorPresenter = atom.views.getView(editor).component.presenter
           editorPresenter.stopBlinkingCursors true
           if interval > 0
-            @applySecondaryColor()
+            @applySecondaryColor @getConfig 'secondaryColor'
             editorPresenter.cursorBlinkPeriod = interval
           else
-            @applySecondaryColor()
+            @applyPrimaryColor @getConfig 'primaryColor'
             editorPresenter.cursorBlinkPeriod = -1 + Math.pow 2, 31
           editorPresenter.startBlinkingCursors()
         , 0
@@ -147,7 +147,7 @@ class BlockCursor
   applyCursorThickness: (thickness) =>
     @updateStylesheet primarySelector, 'border-width', "#{thickness}px"
 
-  applyCursorLineFix: (doFix) =>
+  applyCursorLineFix: (doFix) ->
     workspaceView = atom.views.getView atom.workspace
     if doFix
       workspaceView.classList.add 'block-cursor-cursor-line-fix'
@@ -165,12 +165,6 @@ class BlockCursor
     sheet = @getCursorStyle().sheet
     sheet.insertRule "#{selector} { #{property}: #{value}; }", sheet.cssRules.length
 
-  toRGBAString: (color) ->
-    return color if typeof color is 'string'
-    return color.toRGBAString() if color.toRGBAString?
-    return unless color.red? and color.green? and color.blue? and color.alpha?
-    "rgba(#{color.red}, #{color.green}, #{color.blue}, #{color.alpha})"
-
   getConfig: (key) ->
     atom.config.get "block-cursor.#{key}"
 
@@ -178,9 +172,7 @@ class BlockCursor
     atom.config.set "block-cursor.#{key}", value
 
   observeConfigs: (obj) ->
-    @observeConfig key, cb for own key, cb of obj
-
-  observeConfig: (key, cb) ->
-    @subs.add atom.config.observe "block-cursor.#{key}", cb
+    for own key, cb of obj
+      @subs.add atom.config.observe "block-cursor.#{key}", cb
 
 module.exports = new BlockCursor()
