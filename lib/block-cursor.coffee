@@ -59,7 +59,7 @@ class BlockCursor
       default: 1
       minimum: 1
       order: 7
-    zzzpreview:
+    preview:
       title: 'Preview'
       description: 'This field does nothing, it\'s just here to preview your cursor. The blinkInterval setting does not work in this field.'
       type: 'string'
@@ -69,6 +69,7 @@ class BlockCursor
       description: 'Fix to render the cursor above the text when .cursor-line has a background-color. See readme for more info'
       type: 'boolean'
       default: false
+      order: 9
 
   activate: ->
     @subs = new CompositeDisposable()
@@ -82,7 +83,8 @@ class BlockCursor
       'pulseDuration': @applyPulseDuration
       'cursorThickness': @applyCursorThickness
       'cursorLineFix': @applyCursorLineFix
-    atom.config.set 'block-cursor.zzzpreview', 'The quick brown fox jumps over the lazy dog'
+    @setConfig 'preview', 'The quick brown fox jumps over the lazy dog'
+    atom.config.unset 'block-cursor.zzzpreview' # renamed to 'preview', so leave this here for few versions
 
   deactivate: ->
     @subs.dispose()
