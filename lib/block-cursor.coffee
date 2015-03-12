@@ -75,6 +75,8 @@ class BlockCursor
     @updateStylesheet primarySelector, 'border-color', color
 
   applySecondaryColor: (color) =>
+    if atom.config.get 'block-cursor.blinkInterval' is 0
+      color = atom.config.get 'block-cursor.primaryColor'
     color = color.toRGBAString?() or @toRGBAString color
     @updateStylesheet secondarySelector, 'background-color', color
     @updateStylesheet secondarySelector, 'border-color', color
@@ -87,14 +89,11 @@ class BlockCursor
       sub = atom.workspace.observeTextEditors (editor) ->
         setTimeout ->
           editorPresenter = atom.views.getView(editor).component.presenter
-          # return unless editorPresenter
           editorPresenter.stopBlinkingCursors true
           if interval > 0
             editorPresenter.cursorBlinkPeriod = interval
-            atom.config.set 'block-cursor.secondaryColor', 'transparent'
           else
             editorPresenter.cursorBlinkPeriod = -1 + Math.pow 2, 31
-            atom.config.set 'block-cursor.secondaryColor', atom.config.get 'block-cursor.primaryColor'
           editorPresenter.startBlinkingCursors()
         , 0
       @subs.add sub
