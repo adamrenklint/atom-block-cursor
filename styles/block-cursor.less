@@ -12,7 +12,12 @@ atom-text-editor::shadow .cursors {
   .block-cursor-block & .cursor {
     border: none!important;
     z-index: -1;
+
+    .block-cursor-cursor-line-fix& {
+      z-index: 1;
+    }
   }
+
 
   .block-cursor-bordered-box & .cursor {
     background-color: transparent!important;
