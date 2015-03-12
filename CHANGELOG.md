@@ -1,5 +1,8 @@
 # block-cursor changelog
 
+## 0.9.8
+* Don't set secondaryColor when changing blinkInterval
+
 ## 0.9.7
 * Better fix for #5
 
