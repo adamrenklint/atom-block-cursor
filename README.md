@@ -17,7 +17,7 @@ The cursor can be one of the following:
 
 The primary and secondary colors determine the color of the cursor in it's `blink-on` and `blink-off` state, respectively.
 
-Because Chrome's color picker on Linux doesn't support the alpha channel, there's also a separate config for the alpha channel. Updating the alpha from the color picker also updates that config, and vice-versa.
+Because Chrome's color picker on Linux doesn't support the alpha channel, there's a separate config for the alpha channel. You have to use these to get an alpha on the cursor, so setting an alpha on the `primaryColor` or `secondaryColor` doesn't do anything.
 
 ### blink interval
 
