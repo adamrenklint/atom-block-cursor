@@ -1,6 +1,7 @@
 # block-cursor changelog
 
 ## 0.10.1
+* Fix readme
 * Some rewriting
 
 ## 0.10.0
