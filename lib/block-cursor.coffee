@@ -1,15 +1,14 @@
 'use strict'
-{CompositeDisposable} = require 'atom'
+{Disposable, CompositeDisposable} = require 'atom'
 
 class BlockCursor
-  cursorStyle = null
+  primarySelector = 'atom-text-editor::shadow .cursors .cursor'
+  secondarySelector = 'atom-text-editor::shadow .cursors.blink-off .cursor'
   cursorTypeMap =
     '\u25AE - Block': 'block' # ▮
     '\u25AF - Bordered box': 'bordered-box' # ▯
     '| - I-beam': 'i-beam'
     '_ - Underline': 'underline'
-  primarySelector = 'atom-text-editor::shadow .cursors .cursor'
-  secondarySelector = 'atom-text-editor::shadow .cursors.blink-off .cursor'
 
   config:
     cursorType:
@@ -72,39 +71,33 @@ class BlockCursor
 
   activate: ->
     @subs = new CompositeDisposable()
-    @observeConfigs
-      'cursorType': @applyCursorType
-      'primaryColor': @applyPrimaryColor
-      'primaryColorAlpha': @applyPrimaryColor
-      'secondaryColor': @applySecondaryColor
-      'secondaryColorAlpha': @applySecondaryColor
-      'blinkInterval': @applyBlinkInterval.bind @
-      'pulseDuration': @applyPulseDuration
-      'cursorThickness': @applyCursorThickness
-      'cursorLineFix': @applyCursorLineFix
-    @setConfig 'preview', 'The quick brown fox jumps over the lazy dog'
-    atom.config.unset 'block-cursor.zzzpreview' # renamed to 'preview', so leave this here for few versions
+    @subs.add [
+      atom.config.observe 'block-cursor.cursorType', @applyCursorType
+      atom.config.observe 'block-cursor.primaryColor', @applyPrimaryColor
+      atom.config.observe 'block-cursor.primaryColorAlpha', @applyPrimaryColor
+      atom.config.observe 'block-cursor.secondaryColor', @applySecondaryColor
+      atom.config.observe 'block-cursor.secondaryColorAlpha', @applySecondaryColor
+      atom.config.observe 'block-cursor.blinkInterval', @applyBlinkInterval.bind @
+      atom.config.observe 'block-cursor.pulseDuration', @applyPulseDuration
+      atom.config.observe 'block-cursor.cursorThickness', @applyCursorThickness
+      atom.config.observe 'block-cursor.cursorLineFix', @applyCursorLineFix
+    ]
+    # set some text in the preview field
+    atom.config.set 'block-cursor.preview', 'The quick brown fox jumps over the lazy dog'
+    # renamed to 'preview', so leave this here for few versions. preview was zzzpreview
+    # as a hack to force it to show at the bottom of the list in the settings view
+    atom.config.unset 'block-cursor.zzzpreview'
 
   deactivate: ->
     @subs.dispose()
-    if cursorStyle?
-      cursorStyle.parentNode.removeChild cursorStyle
-      cursorStyle = null
-
-  getConfig: (key) ->
-    atom.config.get "block-cursor.#{key}"
-
-  setConfig: (key, value) ->
-    atom.config.set "block-cursor.#{key}", value
-
-  observeConfigs: (obj) ->
-    for own key, cb of obj
-      @subs.add atom.config.observe "block-cursor.#{key}", cb
 
   getColor: (which) ->
-    color = @getConfig "#{which}Color"
-    color.alpha = @getConfig "#{which}ColorAlpha"
+    color = atom.config.get "block-cursor.#{which}Color"
+    color.alpha = atom.config.get "block-cursor.#{which}ColorAlpha"
     color.toRGBAString()
+
+  getBlinkInterval: ->
+    atom.config.get 'block-cursor.blinkInterval'
 
   applyCursorType: (cursorTypeName) ->
     cursorType = cursorTypeMap[cursorTypeName] ? cursorTypeName
@@ -117,13 +110,13 @@ class BlockCursor
     @updateStylesheet primarySelector, 'background-color', color
     @updateStylesheet primarySelector, 'border-color', color
     # also apply to blink-off state if cursor blink is disabled
-    if 0 is @getConfig 'blinkInterval'
+    if 0 is @getBlinkInterval()
       @updateStylesheet secondarySelector, 'background-color', color
       @updateStylesheet secondarySelector, 'border-color', color
 
   applySecondaryColor: =>
     # use primaryColor if cursor blink is disabled
-    color = @getColor (if 0 is @getConfig 'blinkInterval' then 'primary' else 'secondary')
+    color = @getColor (if 0 is @getBlinkInterval() then 'primary' else 'secondary')
     @updateStylesheet secondarySelector, 'background-color', color
     @updateStylesheet secondarySelector, 'border-color', color
 
@@ -153,15 +146,21 @@ class BlockCursor
     workspaceView = atom.views.getView atom.workspace
     workspaceView.classList[if doFix then 'add' else 'remove'] 'block-cursor-cursor-line-fix'
 
-  getCursorStyle: ->
-    return cursorStyle if cursorStyle?
-    cursorStyle = document.createElement 'style'
-    cursorStyle.type = 'text/css'
-    document.querySelector('head atom-styles').appendChild cursorStyle
-    cursorStyle
+  updateStylesheet: do ->
+    sub = null
+    style = null
 
-  updateStylesheet: (selector, property, value) ->
-    sheet = @getCursorStyle().sheet
-    sheet.insertRule "#{selector} { #{property}: #{value}; }", sheet.cssRules.length
+    (selector, property, value) ->
+      unless sub?
+        sub = new Disposable ->
+          style.parentNode.removeChild style
+          style = null
+          sub = null
+        @subs.add sub
+      unless style?
+        style = document.createElement 'style'
+        style.type = 'text/css'
+        document.querySelector('head atom-styles').appendChild style
+      style.sheet.insertRule "#{selector} { #{property}: #{value}; }", style.sheet.cssRules.length
 
 module.exports = new BlockCursor()
