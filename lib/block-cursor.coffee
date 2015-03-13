@@ -42,7 +42,7 @@ class BlockCursor
       maximum: 1
       order: 4
     blinkInterval:
-      description: 'Cursor blinking interval in milliseconds. Set to 0 to disable blinking. Doesn\'t work for mini editors, except for disabling cursor blinking'
+      description: 'Cursor blinking interval in milliseconds. Set to 0 to disable blinking.'
       type: 'integer'
       default: 800
       minimum: 0
