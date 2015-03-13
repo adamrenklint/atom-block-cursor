@@ -1,4 +1,5 @@
-# block-cursor <small><small>[github.com](https://github.com/olmokramer/atom-block-cursor) [atom.io](https://atom.io/packages/block-cursor)</small></small>
+# block-cursor
+ [github.com](https://github.com/olmokramer/atom-block-cursor) [atom.io](https://atom.io/packages/block-cursor)
 
 ![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-block.png)
 
