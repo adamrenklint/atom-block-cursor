@@ -75,9 +75,9 @@ class BlockCursor
     @observeConfigs
       'cursorType': @applyCursorType
       'primaryColor': @applyPrimaryColor
-      'primaryColorAlpha': @applyPrimaryColorAlpha
+      'primaryColorAlpha': @applyPrimaryColor
       'secondaryColor': @applySecondaryColor
-      'secondaryColorAlpha': @applySecondaryColorAlpha
+      'secondaryColorAlpha': @applySecondaryColor
       'blinkInterval': @applyBlinkInterval.bind @
       'pulseDuration': @applyPulseDuration
       'cursorThickness': @applyCursorThickness
@@ -91,52 +91,51 @@ class BlockCursor
       cursorStyle.parentNode.removeChild cursorStyle
       cursorStyle = null
 
+  getConfig: (key) ->
+    atom.config.get "block-cursor.#{key}"
+
+  setConfig: (key, value) ->
+    atom.config.set "block-cursor.#{key}", value
+
+  observeConfigs: (obj) ->
+    for own key, cb of obj
+      @subs.add atom.config.observe "block-cursor.#{key}", cb
+
+  getColor: (which) ->
+    color = @getConfig "#{which}Color"
+    color.alpha = @getConfig "#{which}ColorAlpha"
+    color.toRGBAString()
+
   applyCursorType: (cursorTypeName) ->
     cursorType = cursorTypeMap[cursorTypeName] ? cursorTypeName
     workspaceView = atom.views.getView atom.workspace
     workspaceView.className = workspaceView.className.replace /block-cursor-(?:block|bordered-box|i-beam|underline)/, ''
     workspaceView.classList.add "block-cursor-#{cursorType}"
 
-  applyPrimaryColor: (color = @getConfig 'primaryColor') =>
-    color = color.toRGBAString()
+  applyPrimaryColor: =>
+    color = @getColor 'primary'
     @updateStylesheet primarySelector, 'background-color', color
     @updateStylesheet primarySelector, 'border-color', color
     if 0 is @getConfig 'blinkInterval'
       @updateStylesheet secondarySelector, 'background-color', color
       @updateStylesheet secondarySelector, 'border-color', color
 
-  applyPrimaryColorAlpha: (alpha) =>
-    primaryColor = @getConfig 'primaryColor'
-    primaryColor.alpha = alpha
-    @setConfig 'primaryColor', primaryColor
-
-  applySecondaryColor: (color) =>
-    if 0 is @getConfig 'blinkInterval'
-      color = @getConfig 'primaryColor'
-    color = color.toRGBAString()
+  applySecondaryColor: =>
+    color = @getColor (if 0 is @getConfig 'blinkInterval' then 'primary' else 'secondary')
     @updateStylesheet secondarySelector, 'background-color', color
     @updateStylesheet secondarySelector, 'border-color', color
 
-  applySecondaryColorAlpha: (alpha) =>
-    secondaryColor = @getConfig 'secondaryColor'
-    secondaryColor.alpha = alpha
-    @setConfig 'secondaryColor', secondaryColor
-
   applyBlinkInterval: do ->
     sub = null
-
     (interval) ->
+      if interval is 0 then interval = -1 + Math.pow 2, 31
+      @applySecondaryColor()
       sub?.dispose()
-      sub = atom.workspace.observeTextEditors (editor) =>
-        setTimeout =>
+      sub = atom.workspace.observeTextEditors (editor) ->
+        setTimeout ->
           editorPresenter = atom.views.getView(editor).component.presenter
           editorPresenter.stopBlinkingCursors true
-          if interval > 0
-            @applySecondaryColor @getConfig 'secondaryColor'
-            editorPresenter.cursorBlinkPeriod = interval
-          else
-            @applyPrimaryColor @getConfig 'primaryColor'
-            editorPresenter.cursorBlinkPeriod = -1 + Math.pow 2, 31
+          editorPresenter.cursorBlinkPeriod = interval
           editorPresenter.startBlinkingCursors()
         , 0
       @subs.add sub
@@ -149,10 +148,7 @@ class BlockCursor
 
   applyCursorLineFix: (doFix) ->
     workspaceView = atom.views.getView atom.workspace
-    if doFix
-      workspaceView.classList.add 'block-cursor-cursor-line-fix'
-    else
-      workspaceView.classList.remove 'block-cursor-cursor-line-fix'
+    workspaceView.classList[if doFix then 'add' else 'remove'] 'block-cursor-cursor-line-fix'
 
   getCursorStyle: ->
     return cursorStyle if cursorStyle?
@@ -164,15 +160,5 @@ class BlockCursor
   updateStylesheet: (selector, property, value) ->
     sheet = @getCursorStyle().sheet
     sheet.insertRule "#{selector} { #{property}: #{value}; }", sheet.cssRules.length
-
-  getConfig: (key) ->
-    atom.config.get "block-cursor.#{key}"
-
-  setConfig: (key, value) ->
-    atom.config.set "block-cursor.#{key}", value
-
-  observeConfigs: (obj) ->
-    for own key, cb of obj
-      @subs.add atom.config.observe "block-cursor.#{key}", cb
 
 module.exports = new BlockCursor()
