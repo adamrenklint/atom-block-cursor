@@ -37,6 +37,13 @@ The thickness of the non-block cursors.
 
 When your syntax theme uses a `background-color` on `.cursor-line` - the line the cursor is on - the `block` cursor may become invisible. This is because the cursor has a `z-index` of `-1`, to make it render behind the text instead of above it. This fix sets the cursor's `z-index` to `1`, to make it render above the text, so you should use low `alpha` values for `primaryColor` and `secondaryColor` if you enable this fix.
 
+You can also add this to your `styles.less` to disable the line highlight:
+```less
+atom-text-editor::shadow .lines .line.cursor-line {
+  background-color: transparent;
+}
+```
+
 ## known issues
 
 * Blink interval doesn't work in `mini` editors - the single line input fields, for example in settings - except for disabling blink.
