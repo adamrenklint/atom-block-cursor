@@ -5,6 +5,23 @@
 
 What started out as a simple package to replace the I-beam cursor for a Block cursor, ended up a complete cursor customization package.
 
+## config
+
+### defaults
+
+```cson
+'block-cursor':
+  cursorType: 'block'
+  primaryColor: '#393939'
+  primaryColorAlpha: 1
+  secondaryColor: 'transparent'
+  secondaryColorAlpha: 0
+  blinkInterval: 800
+  pulseDuration: 0
+  cursorThickness: 1
+  cursorLineFix: false
+```
+
 ### cursor type
 
 The cursor can be one of the following:
