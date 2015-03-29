@@ -1,38 +1,51 @@
-atom-text-editor::shadow .cursors {
-  .cursor {
-    opacity: 1!important;
-    color: none;
-    transition-property: background-color, border-color;
+atom-text-editor {
+  &::shadow .cursors {
+    .cursor {
+      opacity: 1;
+      color: none;
+      transition-property: background-color, border-color;
+    }
+
+    &.blink-off .cursor {
+      opacity: 1;
+    }
   }
 
-  &.blink-off .cursor {
-    opacity: 1!important;
-  }
+  .block-cursor-block &,
+  &.block-cursor-block {
+    &::shadow .cursors .cursor {
+      border: none;
+      z-index: -1;
+    }
 
-  .block-cursor-block & .cursor {
-    border: none!important;
-    z-index: -1;
-
-    .block-cursor-cursor-line-fix& {
+    &.block-cursor-line-fix::shadow .cursors .cursor {
       z-index: 1;
     }
   }
 
-
-  .block-cursor-bordered-box & .cursor {
-    background-color: transparent!important;
-    border-style: solid;
+  .block-cursor-bordered-box &,
+  &.block-cursor-bordered-box{
+    &::shadow .cursors .cursor {
+      background-color: transparent!important;
+      border-style: solid;
+    }
   }
 
-  .block-cursor-i-beam & .cursor {
-    background-color: transparent!important;
-    border-left-style: solid;
+  .block-cursor-i-beam &,
+  &.block-cursor-i-beam {
+    &::shadow .cursors .cursor {
+      background-color: transparent!important;
+      border-left-style: solid;
+    }
   }
 
-  .block-cursor-underline & .cursor {
-    background-color: transparent!important;
-    border-left: none!important;
-    border-bottom-style: solid;
+  .block-cursor-underline &,
+  &.block-cursor-underline {
+    &::shadow .cursors .cursor {
+      background-color: transparent!important;
+      border-bottom-style: solid;
+      border-left: none;
+    }
   }
 }
 
