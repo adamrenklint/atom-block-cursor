@@ -46,24 +46,27 @@ atom-text-editor::shadow .lines .line.cursor-line {
 
 ## scoped config
 
-You can have a different cursor for every language with scoped config. In your `~/.atom/config.cson` you create a scope for a language, and override options for that scope:
+With scoped config you can yave a different cursor for every language. Create a scope in `~/.atom/config.cson` and override the default options for that scope. When a property is not defined for a scope it will default to the global config.
+
+Example:
 ```cson
-'*': # global scope
-  'block-cursor': # gray cursor and no blink by default
+# a gray cursor by default but when in a coffee-script file
+# the cursor is pink and blinks twice as fast
+'*':
+  'block-cursor':
     primaryColor:
       red: 57
       green: 57
       blue: 57
       alpha: 1
-    blinkInterval: 0
 '.coffee.source': # coffee-script scope
-  'block-cursor': # pink cursor and default blinking in coffee-script
+  'block-cursor':
     secondaryColor:
       red: 255
       green: 0
       blue: 255
       alpha: 1
-    blinkInterval: 800
+    blinkInterval: 400
 ```
 
 ## known issues
