@@ -79,28 +79,38 @@ class BlockCursor
 
   update: do ->
     subs = null
+    cache = {}
     (config) ->
       subs?.dispose()
       subs = new CompositeDisposable()
-      globalConfig = _.clone config
-      globalConfig.editor = atom.workspace
-      @updateEditorConfig globalConfig
+      @updateGlobalConfig _.clone(config)
       subs.add atom.workspace.observeTextEditors (editor) =>
         scope = editor.getGrammar().scopeName
-        subs.add atom.config.observe 'block-cursor', scope: [scope], (scopedConfig) =>
-          editorConfig = _.clone config
-          for own key, value of scopedConfig
-            editorConfig[key] = value
-          editorConfig.editor = editor
-          editorConfig.grammar = scope.split '.'
-          @updateEditorConfig editorConfig
-          @applyBlinkInterval editorConfig
+        sub = atom.config.observe 'block-cursor', scope: [scope], (scopedConfig) =>
+          @updateEditorConfig editor, scope.split('.'), _.clone(config), scopedConfig
+        subs.add editor.onDidDestroy ->
+          sub.dispose()
+        subs.add sub
       @subs.add subs
 
-  updateEditorConfig: (config) ->
+  updateGlobalConfig: (config) ->
+    config.editor = atom.workspace
     @applyCursorType config
     @applyPrimaryColor config
     @applySecondaryColor config
+    @applyPulseDuration config
+    @applyCursorThickness config
+    @applyCursorLineFix config
+
+  updateEditorConfig: (editor, grammar, config, scopedConfig) ->
+    for own key, value of scopedConfig
+      config[key] = value
+    config.editor = editor
+    config.grammar = grammar
+    @applyCursorType config
+    @applyPrimaryColor config
+    @applySecondaryColor config
+    @applyBlinkInterval config
     @applyPulseDuration config
     @applyCursorThickness config
     @applyCursorLineFix config
