@@ -1,5 +1,8 @@
 # block-cursor changelog
 
+## 0.11.2
+* Fix #8
+
 ## 0.11.1
 * Fix some minor issues
 
