@@ -1,5 +1,8 @@
 # block-cursor changelog
 
+## 0.11.1
+* Fix some minor issues
+
 ## 0.11.0
 * Add support for scoped config
 
