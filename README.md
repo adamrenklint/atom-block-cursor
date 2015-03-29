@@ -63,13 +63,13 @@ atom-text-editor::shadow .lines .line.cursor-line {
 
 ## scoped config
 
-With scoped config you can yave a different cursor for every language. Create a scope in `~/.atom/config.cson` and override the default options for that scope. When a property is not defined for a scope it will default to the global config.
+With scoped config you can yave a different cursor for every language. Create a scope in `~/.atom/config.cson` and override the global options for that scope. When a property is not defined for a scope it will default to the global config.
 
 Example:
 ```cson
 # a gray cursor by default but when in a coffee-script file
 # the cursor is pink and blinks twice as fast
-'*':
+'*': # global scope
   'block-cursor':
     primaryColor:
       red: 57
