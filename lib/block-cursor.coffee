@@ -6,7 +6,7 @@ class BlockCursor
   config:
     cursorType:
       type: 'string'
-      default: '\u25AE - Block'
+      default: 'block'
       enum: [
         'block'
         'bordered-box'
