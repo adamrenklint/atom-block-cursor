@@ -1,5 +1,8 @@
 # block-cursor changelog
 
+## 0.12.0
+* Rewrite
+
 ## 0.11.2
 * Fix #8
 
