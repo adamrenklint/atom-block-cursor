@@ -68,136 +68,129 @@ class BlockCursor
       order: 9
 
   activate: ->
-    @subs = new CompositeDisposable()
-    @subs.add atom.config.observe 'block-cursor', (config) =>
-      @update config
-    # set some text in the preview field
     atom.config.set 'block-cursor.preview', 'The quick brown fox jumps over the lazy dog'
 
+    @disposables = new CompositeDisposable()
+
+    @disposables.add atom.config.observe 'block-cursor', (@globalConfig) =>
+      @updateCursorStyleForScope editors: [atom.workspace], scopeName: '*', @globalConfig
+      for own scopeName, scopedConfigObserver of @scopedConfigObservers
+        @updateCursorStyleForScope scopedConfigObserver, @configForScope scopeName
+
+    @disposables.add atom.workspace.observeTextEditors (editor) =>
+      @observeScopedConfigForEditor editor
+
+    @disposables.add new Disposable =>
+      for own scopeName, scopedConfigObserver of @scopedConfigObservers
+        scopedConfigObserver.dispose()
+      @scopedConfigObservers = {}
+
   deactivate: ->
-    @subs.dispose()
+    @disposables.dispose()
 
-  update: do ->
-    subs = null
-    cache = {}
-    (config) ->
-      subs?.dispose()
-      subs = new CompositeDisposable()
-      @updateGlobalConfig _.clone(config)
-      subs.add atom.workspace.observeTextEditors (editor) =>
-        scope = editor.getGrammar().scopeName
-        sub = atom.config.observe 'block-cursor', scope: [scope], (scopedConfig) =>
-          @updateEditorConfig editor, scope.split('.'), _.clone(config), scopedConfig
-        subs.add editor.onDidDestroy ->
-          sub.dispose()
-        subs.add sub
-      @subs.add subs
+  scopedConfigObservers: {}
 
-  updateGlobalConfig: (config) ->
-    config.editor = atom.workspace
-    @applyCursorType config
-    @applyPrimaryColor config
-    @applySecondaryColor config
-    @applyPulseDuration config
-    @applyCursorThickness config
-    @applyCursorLineFix config
+  configForScope: (scopeName) ->
+    atom.config.get 'block-cursor', scope: [scopeName]
 
-  updateEditorConfig: (editor, grammar, config, scopedConfig) ->
-    for own key, value of scopedConfig
-      config[key] = value
-    config.editor = editor
-    config.grammar = grammar
-    @applyCursorType config
-    @applyPrimaryColor config
-    @applySecondaryColor config
-    @applyBlinkInterval config
-    @applyPulseDuration config
-    @applyCursorThickness config
-    @applyCursorLineFix config
+  observeScopedConfigForEditor: (editor) ->
+    scopeName = editor.getGrammar().scopeName
+    scopedConfigObserver = @observeScopedConfig scopeName, =>
+      @scopedConfigObservers[scopeName] = null
+    scopedConfigObserver.subscribe editor
+    @disposables.add editor.onDidDestroy =>
+      scopedConfigObserver.unsubscribe editor
+      {editor, scopedConfigObserver} = {}
+    @disposables.add scopedConfigObserver
+    @updateCursorStyleForScope scopedConfigObserver, @configForScope scopeName
 
-  applyCursorType: (config) ->
-    {editor, cursorType} = config
+  observeScopedConfig: (scopeName, disposalAction) ->
+    @scopedConfigObservers[scopeName] ?=
+      scopeName: scopeName
+      editors: []
+      disposable: atom.config.onDidChange 'block-cursor', scope: [scopeName], (config) =>
+        @updateCursorStyleForScope @scopedConfigObservers[scopeName], config.newValue
+      dispose: ->
+        disposalAction()
+        @disposable.dispose()
+        {@editors, @disposable} = {}
+      subscribe: (editor) ->
+        @editors.push editor
+      unsubscribe: (editor) ->
+        @editors = _.without @editors, editor
+        @dispose() if @editors.length is 0
+
+  updateCursorStyleForScope: ({scopeName, editors}, config) ->
+    config = @parseConfig config
+    {colorProperty, primaryColor, secondaryColor, pulseDuration, cursorThickness} = config
+    process.nextTick =>
+      @updateStylesheet scopeName, colorProperty, primaryColor
+      @updateStylesheet scopeName, colorProperty, secondaryColor, true
+      @updateStylesheet scopeName, 'transition-duration', "#{pulseDuration}ms"
+      @updateStylesheet scopeName, 'border-width', "#{cursorThickness}px"
+      for editor in editors
+        @updateCursorStyleForEditor editor, config
+
+  updateCursorStyleForEditor: (editor, {cursorType, blinkInterval, cursorLineFix}) ->
     editorView = atom.views.getView editor
-    editorView.className = editorView.className.replace /block-cursor-(block|bordered-box|i-beam|underline)/, ''
-    editorView.classList.add "block-cursor-#{cursorType}"
-
-  applyPrimaryColor: (config) =>
-    {grammar, primaryColor, primaryColorAlpha, blinkInterval} = config
-    primaryColor.alpha = primaryColorAlpha
-    color = primaryColor.toRGBAString()
-    primarySelector = @getPrimarySelectorForGrammar grammar
-    @updateStylesheet primarySelector, 'background-color', color
-    @updateStylesheet primarySelector, 'border-color', color
-    # also apply to blink-off state if cursor blink is disabled
-    if blinkInterval is 0
-      secondarySelector = @getSecondarySelectorForGrammar grammar
-      @updateStylesheet secondarySelector, 'background-color', color
-      @updateStylesheet secondarySelector, 'border-color', color
-
-  applySecondaryColor: (config) =>
-    {grammar, secondaryColor, secondaryColorAlpha, blinkInterval} = config
-    # use primaryColor if cursor blink is disabled
-    return if blinkInterval is 0
-    secondaryColor.alpha = secondaryColorAlpha
-    color = secondaryColor.toRGBAString()
-    secondarySelector = @getSecondarySelectorForGrammar grammar
-    @updateStylesheet secondarySelector, 'background-color', color
-    @updateStylesheet secondarySelector, 'border-color', color
-
-  applyBlinkInterval: (config) ->
-    {editor, blinkInterval} = config
-    if blinkInterval is 0
-      blinkInterval = -1 + Math.pow 2, 31
-    process.nextTick ->
-      editorPresenter = atom.views.getView(editor).component.presenter
+    editorView.classList.remove 'cursor-block', 'cursor-bordered-box', 'cursor-i-beam', 'cursor-underline'
+    editorView.classList.add "cursor-#{cursorType}"
+    if editorView.component?.presenter?
+      editorPresenter = editorView.component.presenter
       editorPresenter.stopBlinkingCursors true
       editorPresenter.cursorBlinkPeriod = blinkInterval
       editorPresenter.startBlinkingCursors()
-
-  applyPulseDuration: (config) =>
-    {grammar, pulseDuration} = config
-    primarySelector = @getPrimarySelectorForGrammar grammar
-    @updateStylesheet primarySelector, 'transition-duration', "#{pulseDuration}ms"
-
-  applyCursorThickness: (config) =>
-    {grammar, cursorThickness} = config
-    primarySelector = @getPrimarySelectorForGrammar grammar
-    @updateStylesheet primarySelector, 'border-width', "#{cursorThickness}px"
-
-  applyCursorLineFix: (config) ->
-    {editor, cursorLineFix} = config
-    editorView = atom.views.getView editor
     if cursorLineFix
-      editorView.classList.add 'block-cursor-line-fix'
+      editorView.classList.add 'cursor-line-fix'
     else
-      editorView.classList.remove 'block-cursor-line-fix'
+      editorView.classList.remove 'cursor-line-fix'
 
-  getPrimarySelectorForGrammar: (grammar = []) ->
-    str = ''
-    for identifier in grammar
-      str += "[data-grammar~=\"#{identifier}\"]"
-    "atom-text-editor#{str}::shadow .cursors .cursor"
+  parseConfig: (config) ->
+    config = _.defaults {}, config, @globalConfig
+    {cursorType, primaryColor, primaryColorAlpha, secondaryColor, secondaryColorAlpha, blinkInterval} = config
+    config.primaryColor = @parseColor primaryColor, primaryColorAlpha
+    if blinkInterval is 0
+      config.secondaryColor = primaryColor
+      config.blinkInterval = -1 + Math.pow 2, 31
+    else
+      config.secondaryColor = @parseColor secondaryColor, secondaryColorAlpha
+    config.colorProperty = switch cursorType
+      when 'block' then 'background-color'
+      else 'border-color'
+    config
 
-  getSecondarySelectorForGrammar: (grammar = []) ->
-    str = ''
-    for identifier in grammar
-      str += "[data-grammar~=\"#{identifier}\"]"
-    "atom-text-editor#{str}::shadow .cursors.blink-off .cursor"
+  parseColor: (color, alpha) ->
+    newColor =
+      red: color.red
+      green: color.green
+      blue: color.blue
+      alpha: alpha
+    color.toRGBAString.call newColor
 
   updateStylesheet: do ->
-    sub = null
-    style = null
-    (selector, property, value) ->
+    {sub, style} = {}
+
+    selectorForScope = (scopeName, isBlinkOff) ->
+      selector = 'atom-text-editor'
+      unless scopeName is '*'
+        for identifier in scopeName.split('.')
+          selector += "[data-grammar~=\"#{identifier}\"]"
+      selector += '::shadow .cursors'
+      if isBlinkOff
+        selector += '.blink-off'
+      selector += ' .cursor'
+
+    (scopeName, property, value, isBlinkOff = false) ->
       unless sub?
         sub = new Disposable ->
           style.parentNode.removeChild style
-          style = null
-          sub = null
-        @subs.add sub
+          {style, sub} = {}
+        @disposables.add sub
       unless style?
         style = document.createElement 'style'
         style.type = 'text/css'
         document.querySelector('head atom-styles').appendChild style
+      selector = selectorForScope scopeName, isBlinkOff
       style.sheet.insertRule "#{selector} { #{property}: #{value}; }", style.sheet.cssRules.length
 
 module.exports = new BlockCursor()

@@ -2,7 +2,9 @@ atom-text-editor {
   &::shadow .cursors {
     .cursor {
       opacity: 1;
-      color: none;
+      color: transparent;
+      background-color: transparent;
+      border: 0 none transparent;
       transition-property: background-color, border-color;
     }
 
@@ -11,40 +13,35 @@ atom-text-editor {
     }
   }
 
-  .block-cursor-block &,
-  &.block-cursor-block {
+  .cursor-block &,
+  &.cursor-block {
     &::shadow .cursors .cursor {
-      border: none;
       z-index: -1;
     }
 
-    &.block-cursor-line-fix::shadow .cursors .cursor {
+    &.cursor-line-fix::shadow .cursors .cursor {
       z-index: 1;
     }
   }
 
-  .block-cursor-bordered-box &,
-  &.block-cursor-bordered-box{
+  .cursor-bordered-box &,
+  &.cursor-bordered-box{
     &::shadow .cursors .cursor {
-      background-color: transparent!important;
       border-style: solid;
     }
   }
 
-  .block-cursor-i-beam &,
-  &.block-cursor-i-beam {
+  .cursor-i-beam &,
+  &.cursor-i-beam {
     &::shadow .cursors .cursor {
-      background-color: transparent!important;
       border-left-style: solid;
     }
   }
 
-  .block-cursor-underline &,
-  &.block-cursor-underline {
+  .cursor-underline &,
+  &.cursor-underline {
     &::shadow .cursors .cursor {
-      background-color: transparent!important;
       border-bottom-style: solid;
-      border-left: none;
     }
   }
 }
