@@ -2,6 +2,7 @@
 
 ## 0.12.0
 * Rewrite
+* Separate scoped config observation into its own npm package
 
 ## 0.11.2
 * Fix #8
