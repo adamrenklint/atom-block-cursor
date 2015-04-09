@@ -9,6 +9,6 @@
     "atom": ">0.171.0"
   },
   "dependencies": {
-    "underscore": "^1.8.2"
+    "atom-package-config-observer": "^0.0.2"
   }
 }
