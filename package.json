@@ -3,6 +3,12 @@
   "main": "./lib/block-cursor",
   "version": "0.12.0",
   "description": "Fancy cursor custimization",
+  "keywords": [
+    "cursor",
+    "cursor-style",
+    "customization",
+    "ui"
+  ],
   "repository": "https://github.com/olmokramer/atom-block-cursor",
   "license": "MIT",
   "engines": {
