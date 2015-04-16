@@ -1,5 +1,9 @@
 # block-cursor changelog
 
+## 0.12.1
+* Animate opacity when `secondaryColorAlpha` is `0`. Fixes #9
+* Fix #10
+
 ## 0.12.0
 * Rewrite
 * Separate scoped config observation into its own npm package
