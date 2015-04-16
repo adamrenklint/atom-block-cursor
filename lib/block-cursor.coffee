@@ -29,13 +29,13 @@ class BlockCursor
       scopedConfig = @configObserver.configForScope scopeName
       @updateCursorStyleForScope scopedConfig, editors, scopeName
 
-  updateCursorStyleForScope: (config, editors, scopeName) =>
-    @updateStylesheet scopeName, config
+  updateCursorStyleForScope: (scopedConfig, editors, scopeName) =>
+    @updateStylesheet scopeName, scopedConfig
     for editor in editors
-      @updateEditor editor, config
+      @updateEditor editor, scopedConfig
 
-  updateStylesheet: (scopeName, config) ->
-    {cursorType, primaryColor, primaryColorAlpha, secondaryColor, secondaryColorAlpha, blinkInterval, pulseDuration, cursorThickness} = config
+  updateStylesheet: (scopeName, scopedConfig) ->
+    {cursorType, primaryColor, primaryColorAlpha, secondaryColor, secondaryColorAlpha, blinkInterval, pulseDuration, cursorThickness} = scopedConfig
     primaryColor.alpha = primaryColorAlpha
     if blinkInterval is 0
       secondaryColor = primaryColor
@@ -52,7 +52,12 @@ class BlockCursor
         border-width: #{cursorThickness}px;
       }
       #{@selectorForScope scopeName, true} {
-        #{colorProperty}: #{secondaryColor.toRGBAString()};
+        #{
+          if secondaryColor.alpha > 0
+            "#{colorProperty}: #{secondaryColor.toRGBAString()};"
+          else
+            'opacity: 0;'
+        }
         #{transProperty}: transparent;
       }
     """
