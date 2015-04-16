@@ -53,9 +53,13 @@ class BlockCursor
       }
       #{@selectorForScope scopeName, true} {
         #{
+          # if possible, animate opacity instead of
+          # background/border-color as it is much smoother
           if secondaryColor.alpha > 0
             "#{colorProperty}: #{secondaryColor.toRGBAString()};"
+            'opacity: 1;'
           else
+            "#{colorProperty}: #{primaryColor.toRGBAString()};"
             'opacity: 0;'
         }
         #{transProperty}: transparent;
