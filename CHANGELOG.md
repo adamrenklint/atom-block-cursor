@@ -1,5 +1,8 @@
 # block-cursor changelog
 
+## 0.12.2
+* Fix #11 by adding `useHardwareAcceleration` setting
+
 ## 0.12.1
 * Animate opacity when `secondaryColorAlpha` is `0`. Fixes #9
 * Fix #10
