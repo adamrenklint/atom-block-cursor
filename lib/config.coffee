@@ -57,14 +57,20 @@ module.exports =
     minimum: 1
     order: 7
 
+  useHardwareAcceleration:
+    description: 'Use hardware accelerated transitions for the pulse duration when secondaryColorAlpha is set to 0'
+    type: 'boolean'
+    default: true
+    order: 8
+
   preview:
     description: 'This field does nothing, it\'s just here to preview your cursor. The blinkInterval setting does not work in this field.'
     type: 'string'
     default: ''
-    order: 8
+    order: 9
 
   cursorLineFix:
     description: 'Fix to render the cursor above the text when the cursor line has a background-color. See readme for more info.'
     type: 'boolean'
     default: false
-    order: 9
+    order: 10
