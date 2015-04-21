@@ -50,6 +50,10 @@ A pulse effect that fades the cursor from `primaryColor` to `secondaryColor`. Se
 
 The thickness of the non-block cursors.
 
+### use hardware acceleration
+
+Use hardware acceleration on certain animations. Currently only when `secondaryColorAlpha` is set to `0`.
+
 ### cursor line fix
 
 When your syntax theme uses a `background-color` on `.cursor-line` - the line the cursor is on - the `block` cursor may become invisible. This is because the cursor has a `z-index` of `-1`, to make it render behind the text instead of above it. This fix sets the cursor's `z-index` to `1`, to make it render above the text, so you should use low `alpha` values for `primaryColor` and `secondaryColor` if you enable this fix.
