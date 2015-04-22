@@ -1,5 +1,8 @@
 # block-cursor changelog
 
+## 0.12.4
+* Fix #14
+
 ## 0.12.3
 * Merge #12
 
