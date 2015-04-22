@@ -64,7 +64,7 @@ You can also add this to your `styles.less` to disable the line highlight:
 atom-text-editor::shadow .lines .line.cursor-line {
   background-color: transparent;
 }
-```
+```k
 
 ## scoped config
 
