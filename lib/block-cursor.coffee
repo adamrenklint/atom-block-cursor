@@ -92,8 +92,8 @@ class BlockCursor
     @stylesheet.sheet.insertRule """
       #{@selectorForScope scopeName} {
         #{primaryColor.property}: #{primaryColor.toRGBAString()};
-        #{if pulseDuration? then "transition-duration: #{pulseDuration}" else ''}
-        #{if cursorThickness? then "border-width: #{cursorThickness}" else ''}
+        #{if pulseDuration? then "transition-duration: #{pulseDuration};" else ''}
+        #{if cursorThickness? then "border-width: #{cursorThickness};" else ''}
       }
     """, @cssRulesIndexes[scopeName]
     @stylesheet.sheet.insertRule """
