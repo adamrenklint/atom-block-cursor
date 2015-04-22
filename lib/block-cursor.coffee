@@ -74,7 +74,7 @@ class BlockCursor
     config = {cursorType, primaryColor, secondaryColor,
       blinkInterval, useHardwareAcceleration, cursorLineFix}
     if pulseDuration > 0 then config.pulseDuration = "#{pulseDuration}ms"
-    if cursorType isnt 'block' then config.cursorThickness = "#{cursorTickness}px"
+    if cursorType isnt 'block' then config.cursorThickness = "#{cursorThickness}px"
     config
 
   removeCSSRulesForScope: (scopeName) ->
