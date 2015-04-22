@@ -19,6 +19,7 @@ What started out as a simple package to replace the I-beam cursor for a Block cu
   blinkInterval: 800
   pulseDuration: 0
   cursorThickness: 1
+  useHardwareAcceleration: true
   cursorLineFix: false
 ```
 
@@ -92,7 +93,7 @@ Example:
 
 ## known issues
 
-* Blink interval doesn't work in `mini` editors - the single line input fields, for example in settings - except for disabling blink.
+* Blink interval doesn't work in `mini` editors - the single line input fields, for example in settings or the command palette - except for disabling blink.
 
 ## contribute
 
