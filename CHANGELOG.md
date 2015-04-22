@@ -1,7 +1,7 @@
 # block-cursor changelog
 
 ## 0.12.3
-* Fix #12
+* Merge #12
 
 ## 0.12.2
 * Fix #11 by adding `useHardwareAcceleration` setting
