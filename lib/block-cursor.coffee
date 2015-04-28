@@ -34,12 +34,12 @@ class BlockCursor
       @updateCursorStyleForScope scopedConfig, editors, scopeName
 
   updateCursorStyleForScope: (scopedConfig, editors, scopeName) =>
+    scopedConfig = @prepareConfig scopedConfig
     @updateStylesheet scopeName, scopedConfig
     for editor in editors
       @updateEditor editor, scopedConfig
 
   updateStylesheet: (scopeName, scopedConfig) ->
-    scopedConfig = @prepareConfig scopedConfig
     @removeCSSRulesForScope scopeName
     @insertCSSRulesForScope scopeName, scopedConfig
 
@@ -69,7 +69,6 @@ class BlockCursor
     if useHardwareAcceleration and secondaryColor.alpha is 0
       secondaryColor.property = 'opacity'
       secondaryColor.toRGBAString = -> 0
-
     # return new config object
     config = {cursorType, primaryColor, secondaryColor,
       blinkInterval, useHardwareAcceleration, cursorLineFix}
@@ -89,6 +88,7 @@ class BlockCursor
   insertCSSRulesForScope: (scopeName, scopedConfig) ->
     {primaryColor, secondaryColor, pulseDuration, cursorThickness} = scopedConfig
     @cssRulesIndexes[scopeName] ?= @stylesheet.sheet.cssRules.length
+
     @stylesheet.sheet.insertRule """
       #{@selectorForScope scopeName} {
         #{primaryColor.property}: #{primaryColor.toRGBAString()};
@@ -96,6 +96,7 @@ class BlockCursor
         #{if cursorThickness? then "border-width: #{cursorThickness};" else ''}
       }
     """, @cssRulesIndexes[scopeName]
+
     @stylesheet.sheet.insertRule """
       #{@selectorForScope scopeName, true} {
         #{secondaryColor.property}: #{secondaryColor.toRGBAString()};
@@ -105,15 +106,20 @@ class BlockCursor
   updateEditor: (editor, config) ->
     {cursorType, blinkInterval, cursorLineFix} = config
     editorView = atom.views.getView editor
+
     editorView.classList.remove 'cursor-block', 'cursor-bordered-box', 'cursor-i-beam', 'cursor-underline'
     editorView.classList.add "cursor-#{cursorType}"
-    if editorView.component?.presenter?
-      process.nextTick ->
-        editorPresenter = editorView.component.presenter
-        editorPresenter.stopBlinkingCursors true
-        editorPresenter.cursorBlinkPeriod = blinkInterval
-        editorPresenter.startBlinkingCursors()
-    editorView.classList[if cursorLineFix then 'add' else 'remove']('cursor-line-fix')
+
+    if cursorLineFix
+      editorView.classList.add 'cursor-line-fix'
+    else
+      editorView.classList.remove 'cursor-line-fix'
+
+    editorPresenter = editorView.component?.presenter
+    if editorPresenter?
+      editorPresenter.stopBlinkingCursors true
+      editorPresenter.cursorBlinkPeriod = blinkInterval
+      editorPresenter.startBlinkingCursors()
 
   selectorForScope: (scopeName, blinkOff = '') ->
     if scopeName isnt ''
