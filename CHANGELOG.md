@@ -1,5 +1,8 @@
 # block-cursor changelog
 
+## 0.12.5
+* Fix bug where cursor blinking wasn't disabled properly
+
 ## 0.12.4
 * Fix #14
 
