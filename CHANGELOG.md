@@ -2,6 +2,7 @@
 
 ## 0.12.5
 * Fix bug where cursor blinking wasn't disabled properly
+* Add specs
 
 ## 0.12.4
 * Fix #14
