@@ -1,11 +1,54 @@
-helpers = require './helpers'
+normalizeColor = ({red, green, blue, alpha}) ->
+  red = parseInt red
+  green = parseInt green
+  blue = parseInt blue
+
+  alpha = parseFloat alpha
+  if Number.isNaN alpha
+    alpha = 1
+  alpha = alpha.toFixed 2
+
+  {red, green, blue, alpha}
+
+transparent = normalizeColor
+  red: 0
+  green: 0
+  blue: 0
+  alpha: 0
+
+randomInt = (min, max) ->
+  unless max?
+    max = min
+    min = 0
+  Math.floor min + Math.random() * (max - min + 1)
+
+randomColor = =>
+  normalizeColor
+    red: randomInt 255
+    green: randomInt 255
+    blue: randomInt 255
+    alpha: Math.random()
+
+parseRGBAString = (color) ->
+  if typeof color isnt 'string'
+    return color
+
+  rgbaRegex = /rgba?\((\d{1,3}),\s(\d{1,3}),\s(\d{1,3})(?:,\s([\d.]+))?\)/
+  [match, red, green, blue, alpha] = rgbaRegex.exec color
+
+  normalizeColor {red, green, blue, alpha}
+
+config =
+  primaryColor: randomColor()
+  secondaryColor: randomColor()
+  blinkInterval: randomInt(1000, 2000)
+  pulseDuration: randomInt(100, 1000)
+  cursorThickness: randomInt(1, 3)
 
 describe 'block-cursor', ->
-  [workspaceView, editorView, cursors, cursor, cursorStyle] = []
-  [t, r, b, l] = []
+  [workspaceView, editorView, cursors, cursor, cursorStyle, t, r, b, l] = []
 
   getBorderWidth = ->
-    # [top, right, bottom, left]
     [
       parseInt cursorStyle.borderTopWidth
       parseInt cursorStyle.borderRightWidth
@@ -36,7 +79,7 @@ describe 'block-cursor', ->
         atom.config.set 'block-cursor.cursorType', cursorType
         expect(workspaceView.classList.contains("cursor-#{cursorType}")).toBe(true)
 
-    describe 'when set to "block"', ->
+    describe 'when it is "block"', ->
       beforeEach ->
         atom.config.set 'block-cursor.cursorType', 'block'
         [t, r, b, l] = getBorderWidth()
@@ -45,16 +88,16 @@ describe 'block-cursor', ->
         it 'should equal 0', ->
           expect(t is r is b is l is 0).toBe(true)
 
-    describe 'when not set to "block"', ->
+    describe 'when it isnt "block"', ->
       beforeEach ->
         atom.config.set 'block-cursor.cursorType', 'i-beam'
 
       describe 'the background-color of the cursor', ->
         it 'should be transparent', ->
-          bgColor = cursorStyle.backgroundColor
-          expect(helpers.colorEquals bgColor, helpers.transparent).toBe(true)
+          bgColor = parseRGBAString cursorStyle.backgroundColor
+          expect(bgColor).toEqual(transparent)
 
-    describe 'when set to "bordered-box"', ->
+    describe 'when it is "bordered-box"', ->
       beforeEach ->
         atom.config.set 'block-cursor.cursorType', 'bordered-box'
         [t, r, b, l] = getBorderWidth()
@@ -66,7 +109,7 @@ describe 'block-cursor', ->
         it 'should be greater than 0', ->
           expect(t > 0).toBe(true)
 
-    describe 'when set to "i-beam"', ->
+    describe 'when it is "i-beam"', ->
       beforeEach ->
         atom.config.set 'block-cursor.cursorType', 'i-beam'
         [t, r, b, l] = getBorderWidth()
@@ -76,9 +119,9 @@ describe 'block-cursor', ->
           expect(t is r is b is 0).toBe(true)
 
         it 'should be greater than 0 on the left side', ->
-          expect(l).toBeGreaterThan(0)
+          expect(l > 0).toBe(true)
 
-    describe 'when its value is "underline"', ->
+    describe 'when it is "underline"', ->
       beforeEach ->
         atom.config.set 'block-cursor.cursorType', 'underline'
         [t, r, b, l] = getBorderWidth()
@@ -88,12 +131,12 @@ describe 'block-cursor', ->
           expect(t is r is l is 0).toBe(true)
 
         it 'should be greater than 0 on the bottom side', ->
-          expect(b).toBeGreaterThan(0)
+          expect(b > 0).toBe(true)
 
   describe 'the primaryColor and primaryColorAlpha settings', ->
     beforeEach ->
-      atom.config.set 'block-cursor.primaryColor', helpers.primaryColor
-      atom.config.set 'block-cursor.primaryColorAlpha', helpers.primaryColor.alpha
+      atom.config.set 'block-cursor.primaryColor', config.primaryColor
+      atom.config.set 'block-cursor.primaryColorAlpha', config.primaryColor.alpha
       cursors.classList.remove 'blink-off'
 
     describe 'when cursorType is "block"', ->
@@ -101,21 +144,21 @@ describe 'block-cursor', ->
         atom.config.set 'block-cursor.cursorType', 'block'
 
       it 'should set background-color on the cursor', ->
-        bgColor = cursorStyle.backgroundColor
-        expect(helpers.colorEquals bgColor, helpers.primaryColor).toBe(true)
+        bgColor = parseRGBAString cursorStyle.backgroundColor
+        expect(bgColor).toEqual(config.primaryColor)
 
     describe 'when cursorType isn\'t "block"', ->
       beforeEach ->
         atom.config.set 'block-cursor.cursorType', 'i-beam'
 
       it 'should set border-color on the cursor', ->
-        borderColor = cursorStyle.borderColor
-        expect(helpers.colorEquals borderColor, helpers.primaryColor).toBe(true)
+        borderColor = parseRGBAString cursorStyle.borderColor
+        expect(borderColor).toEqual(config.primaryColor)
 
   describe 'the secondaryColor and secondaryColorAlpha settings', ->
     beforeEach ->
-      atom.config.set 'block-cursor.secondaryColor', helpers.secondaryColor
-      atom.config.set 'block-cursor.secondaryColorAlpha', helpers.secondaryColor.alpha
+      atom.config.set 'block-cursor.secondaryColor', config.secondaryColor
+      atom.config.set 'block-cursor.secondaryColorAlpha', config.secondaryColor.alpha
       cursors.classList.add 'blink-off'
 
     describe 'when cursorType is "block"', ->
@@ -123,26 +166,34 @@ describe 'block-cursor', ->
         atom.config.set 'block-cursor.cursorType', 'block'
 
       it 'should set background-color on the cursor', ->
-        bgColor = cursorStyle.backgroundColor
-        expect(helpers.colorEquals bgColor, helpers.secondaryColor).toBe(true)
+        bgColor = parseRGBAString cursorStyle.backgroundColor
+        expect(bgColor).toEqual(config.secondaryColor)
 
     describe 'when cursorType isn\'t "block"', ->
       beforeEach ->
         atom.config.set 'block-cursor.cursorType', 'i-beam'
 
       it 'should set border-color on the cursor', ->
-        borderColor = helpers.parseColor cursorStyle.borderColor
-        expect(helpers.colorEquals borderColor, helpers.secondaryColor).toBe(true)
+        borderColor = parseRGBAString cursorStyle.borderColor
+        expect(borderColor).toEqual(config.secondaryColor)
+
+    describe 'when secondaryColorAlpha is 0', ->
+      beforeEach ->
+        atom.config.set 'block-cursor.secondaryColorAlpha', 0
+        cursors.classList.add 'blink-off'
+
+      it 'should set opacity instead of background-color', ->
+        expect(parseFloat cursorStyle.opacity).toBe(0)
 
   describe 'the blinkInterval setting', ->
     describe 'when it is greater than 0', ->
       beforeEach ->
-        atom.config.set 'block-cursor.blinkInterval', 1000
+        atom.config.set 'block-cursor.blinkInterval', config.blinkInterval
 
       it 'should set editorView.component.presenter.cursorBlinkPeriod equal to the config value', ->
-        expect(editorView.component.presenter.cursorBlinkPeriod).toBe(1000)
+        expect(editorView.component.presenter.cursorBlinkPeriod).toBe(config.blinkInterval)
 
-    describe 'when set to 0', ->
+    describe 'when it is 0', ->
       beforeEach ->
         atom.config.set 'block-cursor.blinkInterval', 0
 
@@ -150,20 +201,20 @@ describe 'block-cursor', ->
         expect(editorView.component.presenter.cursorBlinkPeriod).toBe(-1 + Math.pow 2, 31)
 
       it 'should set secondaryColor equal to primaryColor', ->
-        atom.config.set 'block-cursor.primaryColor', helpers.primaryColor
+        atom.config.set 'block-cursor.primaryColor', config.primaryColor
         cursors.classList.remove 'blink-off'
-        primaryBgColor = cursorStyle.backgroundColor
+        primaryBgColor = parseRGBAString cursorStyle.backgroundColor
         cursors.classList.add 'blink-off'
-        secondaryBgColor = cursorStyle.backgroundColor
-        expect(helpers.colorEquals primaryBgColor, secondaryBgColor).toBe(true)
+        secondaryBgColor = parseRGBAString cursorStyle.backgroundColor
+        expect(primaryBgColor).toEqual(secondaryBgColor)
 
   describe 'the pulseDuration setting', ->
     describe 'when it is greater than 0', ->
       beforeEach ->
-        atom.config.set 'block-cursor.pulseDuration', 500
+        atom.config.set 'block-cursor.pulseDuration', config.pulseDuration
 
       it 'should set transition-duration on the cursor', ->
-        expect(Number.parseFloat cursorStyle.transitionDuration).toBe(.5)
+        expect(Number.parseFloat cursorStyle.transitionDuration).toBe(config.pulseDuration / 1000)
 
     describe 'when it is 0', ->
       beforeEach ->
@@ -174,7 +225,7 @@ describe 'block-cursor', ->
 
   describe 'the cursorThickness setting', ->
     beforeEach ->
-      atom.config.set 'block-cursor.cursorThickness', 2
+      atom.config.set 'block-cursor.cursorThickness', config.cursorThickness
 
     describe 'when cursorType is "block"', ->
       beforeEach ->
@@ -190,23 +241,10 @@ describe 'block-cursor', ->
         [t, r, b, l] = getBorderWidth()
 
       it 'should set border-width on the cursor', ->
-        expect(t is r is b is l is 2).toBe(true)
-
-  describe 'the useHardwareAcceleration setting', ->
-    describe 'when enabled', ->
-      beforeEach ->
-        atom.config.set 'block-cursor.useHardwareAcceleration', true
-
-      describe 'when secondaryColorAlpha is 0', ->
-        beforeEach ->
-          atom.config.set 'block-cursor.secondaryColorAlpha', 0
-          cursors.classList.add 'blink-off'
-
-        it 'should animate opacity instead of background-color on the cursor', ->
-          expect(parseFloat cursorStyle.opacity).toBe(0)
+        expect(t is r is b is l is config.cursorThickness).toBe(true)
 
   describe 'the cursorLineFix setting', ->
-    describe 'when enabled', ->
+    describe 'when it is enabled', ->
       beforeEach ->
         atom.config.set 'block-cursor.cursorLineFix', true
 

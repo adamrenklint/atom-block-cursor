@@ -2,7 +2,77 @@
 PackageConfigObserver = require 'atom-package-config-observer'
 
 class BlockCursor
-  config: require './config'
+  config:
+    cursorType:
+      type: 'string'
+      default: 'block'
+      enum: [
+        'block'
+        'bordered-box'
+        'i-beam'
+        'underline'
+      ]
+      order: 0
+
+    primaryColor:
+      type: 'color'
+      default: '#393939'
+      order: 1
+
+    primaryColorAlpha:
+      description: '0 means invisible, 1 means fully opaque.'
+      type: 'number'
+      default: 1
+      minimum: 0
+      maximum: 1
+      order: 2
+
+    secondaryColor:
+      type: 'color'
+      default: 'transparent'
+      order: 3
+
+    secondaryColorAlpha:
+      description: '0 means invisible, 1 means fully opaque.'
+      type: 'number'
+      default: 0
+      minimum: 0
+      maximum: 1
+      order: 4
+
+    blinkInterval:
+      description: 'Set to 0 to disable cursor blinking.'
+      type: 'integer'
+      default: 800
+      minimum: 0
+      order: 5
+
+    pulseDuration:
+      description: 'Set to 0 to disable pulse effect.'
+      type: 'integer'
+      default: 0
+      minimum: 0
+      order: 6
+
+    cursorThickness:
+      description: 'Doesn\'t apply to "block" cursor type.'
+      type: 'integer'
+      default: 1
+      minimum: 1
+      order: 7
+
+    preview:
+      description: 'This field does nothing, it\'s just here to preview your cursor. The blinkInterval setting does not work in this field.'
+      type: 'string'
+      default: ''
+      order: 8
+
+    cursorLineFix:
+      description: 'Fix to render the cursor above the text when the cursor line has a background-color. See readme for more info.'
+      type: 'boolean'
+      default: false
+      order: 9
+
 
   activate: ->
     @setupStylesheet()
@@ -45,7 +115,7 @@ class BlockCursor
 
   prepareConfig: (config) ->
     {cursorType, primaryColor, primaryColorAlpha, secondaryColor, secondaryColorAlpha,
-      blinkInterval, pulseDuration, cursorThickness, useHardwareAcceleration, cursorLineFix} = config
+      blinkInterval, pulseDuration, cursorThickness, cursorLineFix} = config
     # clone colors to not accidentally call atom.config.set()
     primaryColor = @cloneColor primaryColor
     secondaryColor = @cloneColor secondaryColor
@@ -64,17 +134,16 @@ class BlockCursor
       when 'block' then 'background-color'
       else 'border-color'
 
+    pulseDuration = if pulseDuration > 0 then "#{pulseDuration}ms" else ''
+    cursorThickness = if cursorType isnt 'block' then "#{cursorThickness}px" else ''
+
     # transition opacity instead of background-color to transparent
-    # if harware acceleration is enabled
-    if useHardwareAcceleration and secondaryColor.alpha is 0
+    if secondaryColor.alpha is 0
       secondaryColor.property = 'opacity'
       secondaryColor.toRGBAString = -> 0
     # return new config object
-    config = {cursorType, primaryColor, secondaryColor,
-      blinkInterval, useHardwareAcceleration, cursorLineFix}
-    if pulseDuration > 0 then config.pulseDuration = "#{pulseDuration}ms"
-    if cursorType isnt 'block' then config.cursorThickness = "#{cursorThickness}px"
-    config
+    {cursorType, primaryColor, secondaryColor, blinkInterval,
+      pulseDuration, cursorThickness, cursorLineFix}
 
   removeCSSRulesForScope: (scopeName) ->
     # get index for the rules for this scope
@@ -92,8 +161,8 @@ class BlockCursor
     @stylesheet.sheet.insertRule """
       #{@selectorForScope scopeName} {
         #{primaryColor.property}: #{primaryColor.toRGBAString()};
-        #{if pulseDuration? then "transition-duration: #{pulseDuration};" else ''}
-        #{if cursorThickness? then "border-width: #{cursorThickness};" else ''}
+        #{if pulseDuration then "transition-duration: #{pulseDuration};" else ''}
+        #{if cursorThickness then "border-width: #{cursorThickness};" else ''}
       }
     """, @cssRulesIndexes[scopeName]
 
