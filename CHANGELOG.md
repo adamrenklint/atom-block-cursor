@@ -2,7 +2,6 @@
 
 ## 0.13.0
 * Fix issue with scoped `pulseDuration`/`cursorThickness`
-* Don't apply config to scope if it's the same as the global config
 
 ## 0.12.5
 * Fix bug where cursor blinking wasn't disabled properly
