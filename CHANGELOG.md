@@ -2,6 +2,7 @@
 
 ## 0.13.0
 * Fix issue with scoped `pulseDuration`/`cursorThickness`
+* Remove `useHardwareAcceleration` setting. Hardware acceleration is now automatically used when it makes sense to do so.
 
 ## 0.12.5
 * Fix bug where cursor blinking wasn't disabled properly
