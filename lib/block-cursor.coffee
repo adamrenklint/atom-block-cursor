@@ -1,17 +1,6 @@
 'use strict'
 PackageConfigObserver = require 'atom-package-config-observer'
 
-equals = (obj, ref) ->
-  if obj is ref
-    return true
-  for own key, val of obj
-    if typeof val is 'object'
-      if not equals ref[key], val
-        return false
-    else if ref[key] isnt val
-      return false
-  return true
-
 class BlockCursor
   config:
     cursorType:
