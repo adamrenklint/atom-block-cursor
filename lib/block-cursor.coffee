@@ -115,8 +115,6 @@ class BlockCursor
       @updateCursorStyleForScope scopedConfig, editors, scopeName
 
   updateCursorStyleForScope: (scopedConfig, editors, scopeName) =>
-    if scopedConfig isnt @globalConfig and equals scopedConfig, @globalConfig, scopeName
-      return
     scopedConfig = @prepareConfig scopedConfig
     @updateStylesheet scopeName, scopedConfig
     for editor in editors
