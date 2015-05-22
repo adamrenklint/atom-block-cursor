@@ -1,6 +1,17 @@
 'use strict'
 PackageConfigObserver = require 'atom-package-config-observer'
 
+equals = (obj, ref) ->
+  if obj is ref
+    return true
+  for own key, val of obj
+    if typeof val is 'object'
+      if not equals ref[key], val
+        return false
+    else if ref[key] isnt val
+      return false
+  return true
+
 class BlockCursor
   config:
     cursorType:
@@ -97,13 +108,15 @@ class BlockCursor
     @stylesheet.parentNode.removeChild @stylesheet
     @stylesheet = null
 
-  updateGlobalCursorStyle: (globalConfig) =>
+  updateGlobalCursorStyle: (@globalConfig) =>
     @updateCursorStyleForScope globalConfig, [atom.workspace], ''
     for own scopeName, editors of @configObserver.editorsForObservedScopes()
       scopedConfig = @configObserver.configForScope scopeName
       @updateCursorStyleForScope scopedConfig, editors, scopeName
 
   updateCursorStyleForScope: (scopedConfig, editors, scopeName) =>
+    if scopedConfig isnt @globalConfig and equals scopedConfig, @globalConfig, scopeName
+      return
     scopedConfig = @prepareConfig scopedConfig
     @updateStylesheet scopeName, scopedConfig
     for editor in editors
@@ -134,9 +147,6 @@ class BlockCursor
       when 'block' then 'background-color'
       else 'border-color'
 
-    pulseDuration = if pulseDuration > 0 then "#{pulseDuration}ms" else ''
-    cursorThickness = if cursorType isnt 'block' then "#{cursorThickness}px" else ''
-
     # transition opacity instead of background-color to transparent
     if secondaryColor.alpha is 0
       secondaryColor.property = 'opacity'
@@ -161,8 +171,8 @@ class BlockCursor
     @stylesheet.sheet.insertRule """
       #{@selectorForScope scopeName} {
         #{primaryColor.property}: #{primaryColor.toRGBAString()};
-        #{if pulseDuration then "transition-duration: #{pulseDuration};" else ''}
-        #{if cursorThickness then "border-width: #{cursorThickness};" else ''}
+        transition-duration: #{pulseDuration}ms;
+        border-width: #{cursorThickness}px;
       }
     """, @cssRulesIndexes[scopeName]
 
