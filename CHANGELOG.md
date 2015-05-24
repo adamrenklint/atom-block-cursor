@@ -1,7 +1,7 @@
 # block-cursor changelog
 
 ## 0.13.0
-* Fix issue with scoped `pulseDuration`/`cursorThickness`
+* Rewrite. Breaks current configuration. See [README.md](README.md).
 
 ## 0.12.5
 * Fix bug where cursor blinking wasn't disabled properly
