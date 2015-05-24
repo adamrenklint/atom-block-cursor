@@ -1,45 +1,9 @@
-atom-text-editor {
-  &::shadow .cursors {
-    .cursor {
-      opacity: 1;
-      color: transparent;
-      background-color: transparent;
-      border: none;
-      transition-property: background-color, border-color, opacity;
-    }
-  }
-
-  .cursor-block &,
-  &.cursor-block {
-    &::shadow .cursors .cursor {
-      z-index: -1;
-    }
-
-    &.cursor-line-fix::shadow .cursors .cursor {
-      z-index: 1;
-    }
-  }
-
-  .cursor-bordered-box &,
-  &.cursor-bordered-box{
-    &::shadow .cursors .cursor {
-      border-style: solid;
-    }
-  }
-
-  .cursor-i-beam &,
-  &.cursor-i-beam {
-    &::shadow .cursors .cursor {
-      border-left-style: solid;
-    }
-  }
-
-  .cursor-underline &,
-  &.cursor-underline {
-    &::shadow .cursors .cursor {
-      border-bottom-style: solid;
-    }
-  }
+atom-text-editor::shadow .cursors .cursor {
+  opacity: 1;
+  color: transparent;
+  background-color: transparent;
+  border: none;
+  transition-property: background-color, border-color, opacity;
 }
 
 atom-text-editor[mini]:not(.is-focused)::shadow .cursors .cursor {

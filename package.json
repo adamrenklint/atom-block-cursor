@@ -4,17 +4,12 @@
   "version": "0.12.5",
   "description": "Fancy cursor custimization",
   "keywords": [
-    "cursor",
-    "cursor-style",
-    "customization",
-    "ui"
+    "ui",
+    "cursor"
   ],
   "repository": "https://github.com/olmokramer/atom-block-cursor",
   "license": "MIT",
   "engines": {
-    "atom": ">0.171.0"
-  },
-  "dependencies": {
-    "atom-package-config-observer": "^0.0.6"
+    "atom": ">0.200.0"
   }
 }
