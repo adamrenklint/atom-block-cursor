@@ -1,61 +1,67 @@
 # block-cursor
- [github.com](https://github.com/olmokramer/atom-block-cursor) [atom.io](https://atom.io/packages/block-cursor)
 
 ![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-block.png)
 
-What started out as a simple package to replace the I-beam cursor for a Block cursor, ended up a complete cursor customization package.
+Fancy cursor customisation.
 
 ## config
 
-### defaults
+Multiple cursor types can be registered in `config.cson`. The `block-cursor:new-custom-cursor` command can do this for you.
 
-```cson
-'block-cursor':
-  cursorType: 'block'
-  primaryColor: '#393939'
-  primaryColorAlpha: 1
-  secondaryColor: 'transparent'
-  secondaryColorAlpha: 0
-  blinkInterval: 800
-  pulseDuration: 0
-  cursorThickness: 1
-  useHardwareAcceleration: true
-  cursorLineFix: false
+The following properties can be set for each cursor type:
+
+```coffee
+selector: 'atom-text-editor'
+scopes: [ '*' ]
+blinkOn:
+  backgroundColor: '#393939'
+  borderStyle: 'none'
+  borderColor: 'transparent'
+  borderWidth: 0
+blinkOff:
+  backgroundColor: 'transparent'
+  borderStyle: 'none'
+  borderColor: 'transparent'
+  borderWidth: 0
+pulseDuration: 0
+cursorLineFix: false
 ```
 
-### cursor type
+### selector
 
-The cursor can be one of the following:
-* Block <br>![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-block.png)
-* Bordered-box <br>![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-bordered-box.png)
-* I-beam <br>![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-i-beam.png)
-* Underline <br>![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-underline.png)
+Defines which `atom-text-editor` elements the cursor type should apply to. The selector *must* select an `atom-text-editor` element.
 
-### primary & secondary cursor color and their alpha channels
+### scopes
 
-The primary and secondary colors determine the color of the cursor in it's `blink-on` and `blink-off` state, respectively.
+List of scopes that the cursor type should apply to.
 
-Because Chromium's color picker on Linux doesn't support the alpha channel, there's a separate config for the alpha channel. To avoid complication, you have to use these to get an alpha on the cursor, so setting an alpha on the `primaryColor` or `secondaryColor` doesn't do anything.
+### blink*.backgroundColor
 
-### blink interval
+The background color of the cursor in blink-on or blink-off state.
 
-The blinking interval of the cursor. Set to `0` to disable cursor blinking.
+### blink*.borderStyle
 
-### pulse duration
+The border style of the cursor in blink-on or blink-off state. Can be one of the following:
 
-A pulse effect that fades the cursor from `primaryColor` to `secondaryColor`. Set to 0 to disable.
+* `bordered-box` <br>![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-bordered-box.png)
+* `i-beam` <br>![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-i-beam.png)
+* `underline` <br>![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-underline.png)
+
+### blink*.borderColor
+
+The border color of the cursor in blink-on or blink-off state.
+
+### blink*.borderWidth
+
+The border width of the cursor in blink-on or blink-off state.
+
+### pulseDuration
+
+Pulse effect that fades the cursor from blink-on to blink-off state (instead of blinking). Set to 0 to disable.
 
 ![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-pulse.gif)
 
-### cursor thickness
-
-The thickness of the non-block cursors.
-
-### use hardware acceleration
-
-Use hardware acceleration on certain animations. Currently only when `secondaryColorAlpha` is set to `0`.
-
-### cursor line fix
+### cursorLineFix
 
 When your syntax theme uses a `background-color` on `.cursor-line` - the line the cursor is on - the `block` cursor may become invisible. This is because the cursor has a `z-index` of `-1`, to make it render behind the text instead of above it. This fix sets the cursor's `z-index` to `1`, to make it render above the text, so you should use low `alpha` values for `primaryColor` and `secondaryColor` if you enable this fix.
 
@@ -64,36 +70,59 @@ You can also add this to your `styles.less` to disable the line highlight:
 atom-text-editor::shadow .lines .line.cursor-line {
   background-color: transparent;
 }
-```k
+```
+
+
+
+### example config
+
+```coffee
+"block-cursor":
+  # white cursor by default
+  global:
+    blinkOn:
+      backgroundColor: "white"
+  # dary grey cursor on [mini] editors
+  mini:
+    selector: "atom-text-editor[mini]"
+    blinkOn:
+      backgroundColor: "darkgrey"
+  # box cursor when editor is not focused
+  "no-focus":
+    selector: "atom-text-editor:not(.is-focused)"
+    blinkOn:
+      backgroundColor: "transparent"
+      borderColor: "white"
+      borderStyle: "bordered-box"
+      borderWidth: 1
+  # red cursor in coffeescript
+  "coffee-script":
+    scopes: [ ".source.coffee" ],
+    blinkOn:
+      backgroundColor: "red"
+```
+
+
+
+### HELP! the blink interval setting has disappeared
+
+Use the [cursor-blink-interval](https://atom.io/packages/cursor-blink-interval) package instead.
+
+
+
+## commands
+
+### `block-cursor:new-custom-cursor`
+
+This command adds a new cursor type that can be customised customise to `config.cson`, that can be configured from the settings view. By default it will be called `custom-X`, but it can be renamed to anything you like.
+
+
 
 ## scoped config
 
-With scoped config you can yave a different cursor for every language. Create a scope in `~/.atom/config.cson` and override the global options for that scope. When a property is not defined for a scope it will default to the global config.
+From `v0.13.0` scoped config is done by creating a new cursor type. See the example config.
 
-Example:
-```cson
-# a gray cursor by default but when in a coffee-script file
-# the cursor is pink and blinks twice as fast
-'*': # global scope
-  'block-cursor':
-    primaryColor:
-      red: 57
-      green: 57
-      blue: 57
-      alpha: 1
-'.coffee.source': # coffee-script scope
-  'block-cursor':
-    secondaryColor:
-      red: 255
-      green: 0
-      blue: 255
-      alpha: 1
-    blinkInterval: 400
-```
 
-## known issues
-
-* Blink interval doesn't work in `mini` editors - the single line input fields, for example in settings or the command palette - except for disabling blink.
 
 ## contribute
 
