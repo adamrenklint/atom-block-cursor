@@ -2,6 +2,7 @@
 
 ## 0.13.0
 * Rewrite. Breaks current configuration. See [README.md](README.md).
+* Disable `cursorLineFix` setting temporarily, because of a conflict with tile rendering introduced in Atom v0.209.0.
 
 ## 0.12.5
 * Fix bug where cursor blinking wasn't disabled properly
