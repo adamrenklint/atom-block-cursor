@@ -77,36 +77,36 @@ atom-text-editor::shadow .lines .line.cursor-line {
 ### example config
 
 ```coffee
-"block-cursor":
-  # white cursor by default
-  global:
-    blinkOn:
-      backgroundColor: "white"
-  # dary grey cursor on [mini] editors
-  mini:
-    selector: "atom-text-editor[mini]"
-    blinkOn:
-      backgroundColor: "darkgrey"
-  # box cursor when editor is not focused
-  "no-focus":
-    selector: "atom-text-editor:not(.is-focused)"
-    blinkOn:
-      backgroundColor: "transparent"
-      borderColor: "white"
-      borderStyle: "bordered-box"
-      borderWidth: 1
-  # red cursor in coffeescript
-  "coffee-script":
-    scopes: [ ".source.coffee" ],
-    blinkOn:
-      backgroundColor: "red"
+  "block-cursor":
+    # white cursor by default
+    global:
+      blinkOn:
+        backgroundColor: "white"
+    # dary grey cursor on [mini] editors
+    mini:
+      selector: "atom-text-editor[mini]"
+      blinkOn:
+        backgroundColor: "darkgrey"
+    # box cursor when editor is not focused
+    "no-focus":
+      selector: "atom-text-editor:not(.is-focused)"
+      blinkOn:
+        backgroundColor: "transparent"
+        borderColor: "white"
+        borderStyle: "bordered-box"
+        borderWidth: 1
+    # red cursor in coffeescript
+    "coffee-script":
+      scopes: [ ".source.coffee" ],
+      blinkOn:
+        backgroundColor: "red"
 ```
 
 
 
 ### HELP! the blink interval setting has disappeared
 
-Use the [cursor-blink-interval](https://atom.io/packages/cursor-blink-interval) package instead.
+Use the [cursor-blink-interval](https://atom.io/packages/cursor-blink-interval) package instead. Due to the changes in v0.13.0 it was not as easy to implement it alongside the other features.
 
 
 
@@ -121,6 +121,12 @@ This command adds a new cursor type that can be customised customise to `config.
 ## scoped config
 
 From `v0.13.0` scoped config is done by creating a new cursor type. See the example config.
+
+
+
+## known issues
+
+Due to a [bug](https://github.com/atom/settings-view/issues/518) in [settings-view](https://atom.io/packages/settings-view) sometimes the settings don't appear in the settings view. In that case you'll have to update `~/.atom/config.cson` by hand.
 
 
 
