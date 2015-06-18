@@ -6,7 +6,9 @@ Fancy cursor customisation.
 
 ## config
 
-Multiple cursor types can be registered in `config.cson`. The `block-cursor:new-custom-cursor` command can do this for you.
+Version 0.13.0 breaks the config from previous versions, but has much more flexibility.
+
+Multiple cursor types can be registered in `config.cson`. The `block-cursor:new-custom-cursor` command can register a new cursor type.
 
 The following properties can be set for each cursor type:
 
@@ -29,29 +31,30 @@ cursorLineFix: false
 
 ### selector
 
-Defines which `atom-text-editor` elements the cursor type should apply to. The selector *must* select an `atom-text-editor` element.
+Defines which `atom-text-editor` elements the cursor type should apply to. The selector should select an `atom-text-editor` element.
 
 ### scopes
 
 List of scopes that the cursor type should apply to.
 
-### blink*.backgroundColor
+### blinkOn.backgroundColor & blinkOff.backgroundColor
 
 The background color of the cursor in blink-on or blink-off state.
 
-### blink*.borderStyle
+### blinkOn.borderStyle & blinkOff.borderStyle
 
 The border style of the cursor in blink-on or blink-off state. Can be one of the following:
 
 * `bordered-box` <br>![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-bordered-box.png)
 * `i-beam` <br>![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-i-beam.png)
 * `underline` <br>![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-underline.png)
+* `none`
 
-### blink*.borderColor
+### blinkOn.borderColor & blinkOff.borderColor
 
 The border color of the cursor in blink-on or blink-off state.
 
-### blink*.borderWidth
+### blinkOn.borderWidth & blinkOff.borderWidth
 
 The border width of the cursor in blink-on or blink-off state.
 
@@ -64,6 +67,8 @@ Pulse effect that fades the cursor from blink-on to blink-off state (instead of 
 ### cursorLineFix
 
 When your syntax theme uses a `background-color` on `.cursor-line` - the line the cursor is on - the `block` cursor may become invisible. This is because the cursor has a `z-index` of `-1`, to make it render behind the text instead of above it. This fix sets the cursor's `z-index` to `1`, to make it render above the text, so you should use low `alpha` values for `primaryColor` and `secondaryColor` if you enable this fix.
+
+The `cursorLineFix` is currently ignored due to the new tile rendering of the editor that was introduced in Atom v0.209.0. It will always be set to `true`, to allow the cursor to render above the text, so make sure the background colors you use have low alpha values. Otherwise the character under the cursor will not be visible.
 
 You can also add this to your `styles.less` to disable the line highlight:
 ```less
