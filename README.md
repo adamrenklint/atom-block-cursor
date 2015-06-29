@@ -105,6 +105,16 @@ atom-text-editor::shadow .lines .line.cursor-line {
       scopes: [ ".source.coffee" ],
       blinkOn:
         backgroundColor: "red"
+    # lightgray cursor when using the one-dark-syntax theme
+    "one-dark-syntax":
+      selector: ".theme-one-dark-syntax atom-text-editor"
+      blinkOn:
+        backgroundColor: "lightgray"
+    # darkgray cursor when using the one-light-syntax theme
+    "one-light-syntax":
+      selector: ".theme-one-light-syntax atom-text-editor"
+      blinkOn:
+        backgroundColor: "darkgray"
 ```
 
 
