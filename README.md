@@ -1,8 +1,4 @@
-# block-cursor
-
 ![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/block-cursor.png)
-
-Fancy cursor customisation.
 
 ## config
 
