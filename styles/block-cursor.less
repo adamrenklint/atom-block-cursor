@@ -1,4 +1,4 @@
-atom-text-editor::shadow .cursors .cursor {
+atom-text-editor.editor .cursors .cursor {
   opacity: 1;
   color: transparent;
   background-color: transparent;
@@ -6,6 +6,6 @@ atom-text-editor::shadow .cursors .cursor {
   transition-property: background-color, border-color, opacity;
 }
 
-atom-text-editor[mini]:not(.is-focused)::shadow .cursors .cursor {
+atom-text-editor[mini]:not(.is-focused).editor .cursors .cursor {
   display: none;
 }

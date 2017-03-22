@@ -68,7 +68,7 @@ The `cursorLineFix` is currently ignored due to the new tile rendering of the ed
 
 You can also add this to your `styles.less` to disable the line highlight:
 ```less
-atom-text-editor::shadow .lines .line.cursor-line {
+atom-text-editor.editor .lines .line.cursor-line {
   background-color: transparent;
 }
 ```
