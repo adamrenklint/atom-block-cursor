@@ -1,5 +1,9 @@
 # block-cursor changelog
 
+## 0.13.2
+
+* Fix #33 *Deprecated selector in `block-cursor/styles/block-cursor.less`*
+
 ## 0.13.1
 * Fix #23
 

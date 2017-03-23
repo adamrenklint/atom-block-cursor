@@ -1,16 +1,16 @@
 {
   "name": "block-cursor",
   "main": "./lib/block-cursor",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "description": "Fancy cursor custimization",
   "keywords": [
     "ui",
     "cursor"
   ],
-  "repository": "https://github.com/olmokramer/atom-block-cursor",
+  "repository": "https://github.com/adamrenklint/atom-block-cursor",
   "license": "MIT",
   "engines": {
-    "atom": ">=0.209.0"
+    "atom": ">=1.13.0"
   },
   "dependencies": {
     "object-assign-shim": "^1.0.0"
