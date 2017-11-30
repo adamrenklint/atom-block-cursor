@@ -7,7 +7,7 @@
     "ui",
     "cursor"
   ],
-  "repository": "https://github.com/adamrenklint/atom-block-cursor",
+  "repository": "git@github.com:adamrenklint/atom-block-cursor.git",
   "license": "MIT",
   "engines": {
     "atom": ">=1.13.0"
