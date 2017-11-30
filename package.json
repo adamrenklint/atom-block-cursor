@@ -2,7 +2,7 @@
   "name": "block-cursor",
   "main": "./lib/block-cursor",
   "version": "0.13.2",
-  "description": "Fancy cursor custimization",
+  "description": "Fancy cursor customisation plugin",
   "keywords": [
     "ui",
     "cursor"
