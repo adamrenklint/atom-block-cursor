@@ -1,8 +1,6 @@
 ![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/block-cursor.png)
 
-## config
-
-Version 0.13.0 breaks the config from previous versions, but has much more flexibility.
+## Configure
 
 Multiple cursor types can be registered in `config.cson`. The `block-cursor:new-custom-cursor` command can register a new cursor type.
 
@@ -41,10 +39,13 @@ The background color of the cursor in blink-on or blink-off state.
 
 The border style of the cursor in blink-on or blink-off state. Can be one of the following:
 
-* `bordered-box` <br>![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-bordered-box.png)
-* `i-beam` <br>![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-i-beam.png)
-* `underline` <br>![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-underline.png)
-* `none`
+![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-bordered-box.png)
+
+![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-i-beam.png)
+
+![Block cursor](https://raw.githubusercontent.com/olmokramer/atom-block-cursor/master/cursor-underline.png)
+
+`none`
 
 ### blinkOn.borderColor & blinkOff.borderColor
 
@@ -75,7 +76,7 @@ atom-text-editor.editor .lines .line.cursor-line {
 
 
 
-### example config
+### Example config
 
 ```coffee
   "block-cursor":
@@ -115,42 +116,25 @@ atom-text-editor.editor .lines .line.cursor-line {
 
 
 
-### HELP! the blink interval setting has disappeared
-
-Use the [cursor-blink-interval](https://atom.io/packages/cursor-blink-interval) package instead. Due to the changes in v0.13.0 it was not as easy to implement it alongside the other features.
-
-
-
-## commands
+## Commands
 
 ### `block-cursor:new-custom-cursor`
 
 This command adds a new cursor type that can be customised customise to `config.cson`, that can be configured from the settings view. By default it will be called `custom-X`, but it can be renamed to anything you like.
 
 
-
-## scoped config
-
-From `v0.13.0` scoped config is done by creating a new cursor type. See the example config.
-
-
-
-## known issues
-
-Due to a [bug](https://github.com/atom/settings-view/issues/518) in [settings-view](https://atom.io/packages/settings-view) sometimes the settings don't appear in the settings view. In that case you'll have to update `~/.atom/config.cson` by hand.
-
-
-
-## contribute
+## Contribute
 
 Have other neat ideas for cursor customization? Found a bug?
 
-1. Fork the repo
+1. :fork_and_knife: Fork the repo
 2. :rocket: Make awesome things happen
-3. Create a pull request
+3. :octocat: Create a pull request
 
-Or [create a new issue](https://github.com/olmokramer/atom-block-cursor/issues/new) at the repository if you can't do it yourself.
+Or [create a new issue](https://github.com/adamrenklint/atom-block-cursor/issues/new) at the repository if you can't do it yourself.
 
-## copyright & license
+## License and credits
 
-&copy; 2015 Olmo Kramer <br> [MIT license](LICENSE.md)
+&copy; 2015 Olmo Kramer<br/>
+Maintainer: [Adam Renklint](http://adamrenklint.com)<br/>
+[MIT license](LICENSE.md)

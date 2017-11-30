@@ -1,5 +1,9 @@
 # block-cursor changelog
 
+## 0.13.3
+
+* Fix [#37](https://github.com/adamrenklint/atom-block-cursor/issues/37) *Broken underline style*
+
 ## 0.13.2
 
 * Fix #33 *Deprecated selector in `block-cursor/styles/block-cursor.less`*
